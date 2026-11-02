@@ -255,6 +255,9 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
     justify-items: center;
     gap: 6px;
   }
+  .no-results[hidden] {
+    display: none;
+  }
   .no-results :global(svg) {
     color: var(--brand-green);
   }
