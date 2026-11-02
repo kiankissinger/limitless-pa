@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base
+  title="Donate"
+  description="Donations to Limitless PA are coming soon. Here's how you can help in the meantime."
+  noindex
+>
+  <section class="section">
+    <div class="container soon">
+      <span class="badge"><Icon name="heart" size={30} /></span>
+      <h1>Donations coming soon</h1>
+      <p class="lead">
+        We’re setting up a simple, secure way to support Limitless PA. Thank you for thinking of us. It means a lot.
+      </p>
+
+      <div class="card meantime">
+        <h2>Ways to help right now</h2>
+        <ul>
+          <li><a href="/suggest/">Suggest a place</a> that made your family feel welcome</li>
+          <li><a href="/submit-event/">Share an event</a> families would enjoy</li>
+          <li><a href="/for-businesses/">Tell a local business</a> about becoming sensory-friendly</li>
+          <li><a href="/contact/?topic=volunteer">Volunteer</a> with us</li>
+        </ul>
+      </div>
+
+      <p class="notify">
+        Want to know when donations open? <a href="/contact/?topic=donate">Let us know</a> and we’ll reach out.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .soon {
+    max-width: 640px;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+  .badge {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--brand-primary);
+    margin-bottom: 20px;
+  }
+  h1 {
+    color: var(--brand-primary);
+  }
+  .lead {
+    font-size: 1.15rem;
+    color: var(--ink-muted);
+    max-width: 52ch;
+  }
+  .meantime {
+    width: 100%;
+    text-align: left;
+    padding: 24px 28px;
+    margin-top: 12px;
+    box-shadow: none;
+  }
+  .meantime h2 {
+    font-size: 1.1rem;
+    color: var(--brand-primary);
+    margin-bottom: 12px;
+  }
+  .meantime ul {
+    margin: 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: 8px;
+  }
+  .notify {
+    margin-top: 24px;
+    font-size: 0.97rem;
+    color: var(--ink-muted);
+  }
+</style>

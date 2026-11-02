@@ -19,7 +19,7 @@ const year = new Date().getFullYear();
       <nav aria-label="Footer">
         <h2>Explore</h2>
         <ul>
-          {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          {nav.filter((item) => item.href !== '/donate/').map((item) => <li><a href={item.href}>{item.label}</a></li>)}
         </ul>
       </nav>
 
@@ -29,6 +29,7 @@ const year = new Date().getFullYear();
           <li><a href="/suggest/">Suggest a place</a></li>
           <li><a href="/submit-event/">Share an event</a></li>
           <li><a href="/for-businesses/">Get your business listed</a></li>
+          <li><a href="/donate/">Donate</a></li>
           <li><a href="/contact/">Contact us</a></li>
         </ul>
       </div>

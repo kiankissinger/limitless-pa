@@ -15,4 +15,5 @@ export const nav = [
   { href: '/resources/', label: 'Resources' },
   { href: '/for-businesses/', label: 'For businesses' },
   { href: '/about/', label: 'About' },
+  { href: '/donate/', label: 'Donate' },
 ];

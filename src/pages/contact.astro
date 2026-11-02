@@ -44,6 +44,7 @@ import Icon from '../components/Icon.astro';
             <option>Update or correction to a listing</option>
             <option>I want to volunteer</option>
             <option>Partnership or sponsorship</option>
+            <option>Donating</option>
             <option>Something else</option>
           </select>
         </div>
@@ -78,8 +79,15 @@ import Icon from '../components/Icon.astro';
 </Base>
 
 <script>
+  const params = new URLSearchParams(location.search);
+  // Prefill the topic from ?topic= (used by the Donate page)
+  const topics: Record<string, string> = { donate: 'Donating', volunteer: 'I want to volunteer' };
+  const t = topics[params.get('topic') ?? ''];
+  const topicSelect = document.getElementById('topic') as HTMLSelectElement | null;
+  if (t && topicSelect) topicSelect.value = t;
+
   // Prefill "about" from ?about= (used by "Let us know" links on listings)
-  const about = new URLSearchParams(location.search).get('about');
+  const about = params.get('about');
   if (about) {
     const input = document.getElementById('about') as HTMLInputElement | null;
     const topic = document.getElementById('topic') as HTMLSelectElement | null;
