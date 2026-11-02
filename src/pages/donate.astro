@@ -1,34 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import { getCopy, md, mdi } from '../lib/copy';
+
+const t = await getCopy('donate');
+const link = (t.donation_link ?? '').trim();
 ---
 
-<Base
-  title="Donate"
-  description="Donations to Limitless PA are coming soon. Here's how you can help in the meantime."
-  noindex
->
+<Base title="Donate" description="Support Limitless PA and how you can help families across Pennsylvania." noindex={!link}>
   <section class="section">
     <div class="container soon">
       <span class="badge"><Icon name="heart" size={30} /></span>
-      <h1>Donations coming soon</h1>
-      <p class="lead">
-        We’re setting up a simple, secure way to support Limitless PA. Thank you for thinking of us. It means a lot.
-      </p>
+      <h1>{t.title}</h1>
+      <p class="lead">{t.lead}</p>
+      {
+        link && (
+          <a class="btn btn-primary give" href={link} target="_blank" rel="noopener">
+            {t.donation_button || 'Donate'}
+          </a>
+        )
+      }
 
       <div class="card meantime">
-        <h2>Ways to help right now</h2>
-        <ul>
-          <li><a href="/suggest/">Suggest a place</a> that made your family feel welcome</li>
-          <li><a href="/submit-event/">Share an event</a> families would enjoy</li>
-          <li><a href="/for-businesses/">Tell a local business</a> about becoming sensory-friendly</li>
-          <li><a href="/contact/?topic=volunteer">Volunteer</a> with us</li>
-        </ul>
+        <h2>{t.ways_title}</h2>
+        <Fragment set:html={md(t.ways)} />
       </div>
 
-      <p class="notify">
-        Want to know when donations open? <a href="/contact/?topic=donate">Let us know</a> and we’ll reach out.
-      </p>
+      {t.notify && !link && <p class="notify" set:html={mdi(t.notify)} />}
     </div>
   </section>
 </Base>
@@ -71,6 +69,16 @@ import Icon from '../components/Icon.astro';
     margin-bottom: 12px;
   }
   .meantime ul {
+    margin: 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: 8px;
+  }
+  .give {
+    margin: 4px 0 12px;
+    min-width: 180px;
+  }
+  .meantime :global(ul) {
     margin: 0;
     padding-left: 1.2em;
     display: grid;

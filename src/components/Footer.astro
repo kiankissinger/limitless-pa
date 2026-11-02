@@ -2,6 +2,9 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { site, nav } from '../data/site';
+import { getCopy, mdi } from '../lib/copy';
+
+const t = await getCopy('site');
 const year = new Date().getFullYear();
 ---
 
@@ -10,10 +13,28 @@ const year = new Date().getFullYear();
     <div class="top">
       <div class="about">
         <Logo variant="horizontal" height={64} />
-        <p>
-          A free, community-built guide to the places, events, and people across Pennsylvania that make room for every
-          kid.
-        </p>
+        <p>{t.footer_blurb}</p>
+
+        <form
+          class="newsletter"
+          name="newsletter"
+          method="POST"
+          action="/subscribed/"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          aria-labelledby="newsletter-title"
+        >
+          <input type="hidden" name="form-name" value="newsletter" />
+          <input type="hidden" name="subject" value="New newsletter signup — Limitless PA" />
+          <p class="honeypot"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+          <h2 id="newsletter-title">{t.newsletter_title}</h2>
+          <p class="nl-text">{t.newsletter_text}</p>
+          <div class="nl-row">
+            <label for="newsletter-email" class="visually-hidden">Email address</label>
+            <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Email address" required />
+            <button class="btn btn-secondary" type="submit">{t.newsletter_button}</button>
+          </div>
+        </form>
       </div>
 
       <nav aria-label="Footer">
@@ -37,12 +58,7 @@ const year = new Date().getFullYear();
 
     <div class="disclaimer">
       <Icon name="info" size={22} />
-      <p>
-        <strong>We are not medical providers.</strong> Limitless PA shares community-sourced information about places, events,
-        and everyday resources. Nothing on this site is medical, therapeutic, or legal advice. Accommodations can change, so
-        please contact a business before you visit. In an emergency, call <a href="tel:911">911</a>. For mental health crisis
-        support, call or text <a href="tel:988">988</a>.
-      </p>
+      <p set:html={mdi(t.disclaimer)} />
     </div>
 
     <div class="bottom">
@@ -89,6 +105,42 @@ const year = new Date().getFullYear();
   .about p {
     max-width: 40ch;
     color: var(--ink-muted);
+  }
+  .newsletter {
+    margin-top: 28px;
+    max-width: 420px;
+  }
+  .newsletter h2 {
+    margin-bottom: 4px;
+  }
+  .newsletter .nl-text {
+    margin: 0 0 12px;
+    font-size: 0.95rem;
+  }
+  .nl-row {
+    display: flex;
+    gap: 8px;
+  }
+  .nl-row input {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 14px;
+    font: inherit;
+    font-size: 0.97rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--gray-400);
+    border-radius: 999px;
+  }
+  .nl-row input:focus {
+    border-color: var(--brand-primary);
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 0;
+  }
+  .nl-row .btn {
+    min-height: 44px;
+    padding-block: 0.5em;
   }
   h2 {
     font-size: 1rem;

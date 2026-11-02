@@ -4,6 +4,9 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import PlaceCard from '../../components/PlaceCard.astro';
 import { categories, regions, accommodations } from '../../data/taxonomy';
+import { getCopy, mdi } from '../../lib/copy';
+
+const t = await getCopy('places-page');
 
 const places = (await getCollection('places'))
   .filter((p) => !p.data.draft)
@@ -20,12 +23,9 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">Directory</span>
-      <h1>Find sensory-friendly places</h1>
-      <p>
-        Businesses and venues across Pennsylvania that have made real accommodations for kids with sensory needs. Filter by
-        what matters to your family.
-      </p>
+      <span class="eyebrow">{t.eyebrow}</span>
+      <h1>{t.title}</h1>
+      <p>{t.intro}</p>
     </div>
   </section>
 
@@ -95,10 +95,8 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
 
         <div class="no-results card" id="no-results" hidden>
           <Icon name="search" size={28} />
-          <h2>No matches yet</h2>
-          <p>
-            Try removing a filter — or help us grow the list. If you know a place that fits, we’d love to hear about it.
-          </p>
+          <h2>{t.no_results_title}</h2>
+          <p>{t.no_results_text}</p>
           <div class="no-results-actions">
             <button type="button" class="btn btn-secondary" id="clear-2">Clear filters</button>
             <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
@@ -106,7 +104,7 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
         </div>
 
         <div class="suggest-band">
-          <p><strong>Missing a place you love?</strong> Families are our best source.</p>
+          <p set:html={mdi(t.suggest_band)} />
           <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
         </div>
       </div>

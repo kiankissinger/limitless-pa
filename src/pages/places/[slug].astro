@@ -6,7 +6,9 @@ import PlaceCard from '../../components/PlaceCard.astro';
 import { accommodations, categoryById, type CategoryId } from '../../data/taxonomy';
 
 export async function getStaticPaths() {
-  const places = (await getCollection('places')).filter((p) => !p.data.draft);
+  const places = (await getCollection('places'))
+    .filter((p) => !p.data.draft)
+    .sort((a, b) => a.data.name.localeCompare(b.data.name));
   return places.map((place) => ({ params: { slug: place.id }, props: { place, all: places } }));
 }
 

@@ -2,55 +2,45 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Logo from '../components/Logo.astro';
+import { getCopy, md } from '../lib/copy';
+
+const t = await getCopy('about');
 ---
 
 <Base title="About us" description="Limitless PA connects Pennsylvania families of kids with special needs to welcoming places, events, and community.">
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">About Limitless PA</span>
-      <h1>Connecting Families. Celebrating Inclusion. Strengthening Community.</h1>
-      <p>
-        We help Pennsylvania families of kids with special needs — especially autistic kids — find the places and people
-        that make everyday life a little easier.
-      </p>
+      <span class="eyebrow">{t.eyebrow}</span>
+      <h1>{t.title}</h1>
+      <p>{t.intro}</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container about-grid">
       <div class="prose">
-        <h2>Why we started</h2>
-        <p>
-          For a lot of families, a haircut, a trip to the store, or a birthday party at the trampoline park takes real
-          planning. Loud music, bright lights, long lines, and crowded rooms can turn a simple outing into a hard day — and
-          too often, families just stop going.
-        </p>
-        <p>
-          But all over Pennsylvania, businesses and organizations are quietly making changes: a barber who keeps a quiet
-          room in the back, a theater that keeps the lights up, a museum with headphones at the front desk. Those places are
-          hard to find. Limitless PA brings them together in one spot — and helps more businesses join them.
-        </p>
+        <h2>{t.why_title}</h2>
+        <Fragment set:html={md(t.why_body)} />
 
-        <h2>What we do</h2>
+        <h2>{t.do_title}</h2>
         <ul class="do-list">
-          <li><Icon name="search" size={22} /><span><strong>Find and share welcoming places.</strong> We collect businesses and venues that have made real sensory-friendly accommodations, and we check the details.</span></li>
-          <li><Icon name="calendar" size={22} /><span><strong>Promote inclusive events.</strong> Sensory-friendly showings, adaptive sports, meetups, and family events from hosts across the state.</span></li>
-          <li><Icon name="store" size={22} /><span><strong>Encourage businesses to adapt.</strong> We share simple, low-cost ideas that help any business welcome every kid.</span></li>
-          <li><Icon name="people" size={22} /><span><strong>Build community.</strong> Recommendations come from families who’ve been there. That’s what makes this guide useful.</span></li>
+          {
+            (t.do_items ?? []).map((i: { icon: any; title: string; text: string }) => (
+              <li>
+                <Icon name={i.icon || 'check'} size={22} />
+                <span>
+                  <strong>{i.title}</strong> {i.text}
+                </span>
+              </li>
+            ))
+          }
         </ul>
 
-        <h2>What we’re not</h2>
-        <p>
-          <strong>We are not medical providers, and we don’t claim to be.</strong> We don’t list or recommend doctors,
-          therapists, or clinical services, and nothing on this site is medical, therapeutic, or legal advice. We focus on
-          everything else: the fun, everyday parts of life that every kid deserves.
-        </p>
+        <h2>{t.not_title}</h2>
+        <Fragment set:html={md(t.not_body)} />
 
-        <h2>How listings work</h2>
-        <p>
-          Anyone can suggest a place. Before we list it, we confirm what the business offers. Listings are free. Because
-          programs change, we include the date we last checked each listing and always recommend calling ahead.
-        </p>
+        <h2>{t.how_title}</h2>
+        <Fragment set:html={md(t.how_body)} />
       </div>
 
       <aside class="side">
@@ -58,7 +48,7 @@ import Logo from '../components/Logo.astro';
           <Logo variant="stacked" height={150} />
         </div>
         <div class="card help">
-          <h2>Ways to help</h2>
+          <h2>{t.help_title}</h2>
           <ul>
             <li><a href="/suggest/">Suggest a place</a></li>
             <li><a href="/submit-event/">Share an event</a></li>

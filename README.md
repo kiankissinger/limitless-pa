@@ -27,6 +27,7 @@ src/
   content/
     places/        ← one .md file per business / venue
     events/        ← one .md file per event or recurring program
+    copy/          ← page wording, one .yaml file per page (edited in the CMS)
   data/
     taxonomy.ts    ← categories, regions, accommodation tags
     site.ts        ← site name, tagline, nav links
@@ -110,15 +111,56 @@ buttons.
 
 ---
 
+## Editing the site (CMS) — for Limitless PA
+
+Go to **https://limitlesspa.org/admin** and choose **Login with GitHub**. From there you can:
+
+- **Events**: add one-time events (with a date) or recurring programs. Past one-time events disappear on their own.
+- **Places**: add or update directory listings and choose which accommodations each place offers.
+- **Page text**: change the wording on every page, including the home page, About, For businesses, Resources,
+  Donate, form pages, Privacy, and the footer/newsletter text.
+
+Click **Publish → Publish now** to save. The live site updates in about a minute. Every change is saved
+to the GitHub repo history, so nothing is ever lost and any change can be undone.
+
+The logo, brand colors, and layout are deliberately **not** editable in the CMS (see "Brand — do not modify").
+The lists of categories, regions, and accommodation filters live in `src/data/taxonomy.ts` and need a
+developer to change.
+
+**Donations:** when Limitless PA has a donation page (PayPal, Givebutter, etc.), open **Page text → Donate page**,
+paste the link into **Donation link**, and publish. A Donate button appears.
+
+### One-time CMS setup (site owner)
+
+Editors sign in with a free GitHub account. To turn this on:
+
+1. **Create a GitHub OAuth app**: GitHub → Settings → Developer settings → OAuth Apps → New OAuth App.
+   - Application name: `Limitless PA CMS`
+   - Homepage URL: `https://limitlesspa.org`
+   - Authorization callback URL: `https://api.netlify.com/auth/done`
+   - Then generate a client secret.
+2. **Connect it to Netlify**: open the Netlify project (limitlesspa), go to **Project configuration → Access & security →
+   OAuth → Install provider**, choose **GitHub**, and paste the Client ID and Client secret.
+3. **Add each editor** as a collaborator on `kiankissinger/limitless-pa` with **Write** access
+   (GitHub repo → Settings → Collaborators). They accept the email invite, then log in at `/admin`.
+
+The CMS settings are generated from code (`src/pages/admin/config.yml.ts`), so the dropdowns always match the site.
+
+## Newsletter
+
+The footer signup saves emails to the Netlify form named `newsletter` (Netlify → Forms). Export them as a CSV
+any time and import them into an email tool (Mailchimp, Buttondown, etc.) when you're ready to send updates.
+
 ## Forms (Netlify Forms)
 
-Three forms are detected automatically when the site deploys:
+Four forms are detected automatically when the site deploys:
 
 | Form name        | Page             | Purpose                          |
 | ---------------- | ---------------- | -------------------------------- |
 | `suggest-place`  | `/suggest/`      | Families and owners suggest places |
 | `submit-event`   | `/submit-event/` | Hosts share events               |
 | `contact`        | `/contact/`      | General messages and corrections |
+| `newsletter`     | every page footer | Newsletter signups (email only)  |
 
 Submissions show up in the Netlify dashboard under **Forms**. To get them by email, open
 **Project configuration → Notifications → Emails and webhooks → Form submission notifications** and add

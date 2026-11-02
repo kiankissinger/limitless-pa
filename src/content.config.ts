@@ -4,6 +4,22 @@ import { categories, regions } from './data/taxonomy';
 
 const categoryIds = categories.map((c) => c.id) as [string, ...string[]];
 
+// The CMS saves untouched optional fields as "" (or null). Treat those as
+// "not set" so a blank field never breaks the build.
+const blank = (v: unknown) => (v === '' || v === null ? undefined : v);
+const optText = z.preprocess(blank, z.string().optional());
+const optUrl = z.preprocess(blank, z.string().url().optional());
+const optDate = z.preprocess(blank, z.coerce.date().optional());
+const optTime = z.preprocess(
+  blank,
+  z
+    .string()
+    .regex(/^([01]?\d|2[0-3]):[0-5]\d$/, 'Use 24-hour time like "09:30" or "14:00"')
+    .optional(),
+);
+const tags = z.preprocess((v) => (v == null ? [] : v), z.array(z.string()).default([]));
+const flag = z.preprocess((v) => (v == null || v === '' ? false : v), z.boolean().default(false));
+
 // One Markdown file per place in src/content/places/.
 // The file name becomes the URL: barbershop-name.md -> /places/barbershop-name/
 const places = defineCollection({
@@ -12,28 +28,24 @@ const places = defineCollection({
     name: z.string(),
     category: z.enum(categoryIds),
     region: z.enum(regions),
-    city: z.string().optional(),
-    address: z.string().optional(),
+    city: optText,
+    address: optText,
     summary: z.string(),
-    accommodations: z.array(z.string()).default([]),
-    ages: z.string().optional(),
-    cost: z.string().optional(),
-    schedule: z.string().optional(),
-    website: z.string().url().optional(),
-    phone: z.string().optional(),
-    source: z.string().url().optional(),
+    accommodations: tags,
+    ages: optText,
+    cost: optText,
+    schedule: optText,
+    website: optUrl,
+    phone: optText,
+    source: optUrl,
     // Date Limitless PA last confirmed the details (YYYY-MM-DD)
-    verified: z.coerce.date().optional(),
+    verified: optDate,
     // "Chain or program with locations around PA — check your nearest one"
-    multiLocation: z.boolean().default(false),
-    featured: z.boolean().default(false),
-    draft: z.boolean().default(false),
+    multiLocation: flag,
+    featured: flag,
+    draft: flag,
   }),
 });
-
-const time = z
-  .string()
-  .regex(/^([01]?\d|2[0-3]):[0-5]\d$/, 'Use 24-hour time like "09:30" or "14:00"');
 
 // One Markdown file per event in src/content/events/.
 // Use `date` (YYYY-MM-DD) for one-time events, or `recurring` for things
@@ -44,26 +56,33 @@ const events = defineCollection({
   schema: z
     .object({
       title: z.string(),
-      host: z.string().optional(),
-      date: z.coerce.date().optional(),
-      endDate: z.coerce.date().optional(),
-      startTime: time.optional(),
-      endTime: time.optional(),
-      recurring: z.string().optional(),
-      location: z.string().optional(),
-      city: z.string().optional(),
+      host: optText,
+      date: optDate,
+      endDate: optDate,
+      startTime: optTime,
+      endTime: optTime,
+      recurring: optText,
+      location: optText,
+      city: optText,
       region: z.enum(regions),
-      cost: z.string().optional(),
-      ages: z.string().optional(),
+      cost: optText,
+      ages: optText,
       summary: z.string(),
-      accommodations: z.array(z.string()).default([]),
-      url: z.string().url().optional(),
-      registration: z.string().optional(),
-      draft: z.boolean().default(false),
+      accommodations: tags,
+      url: optUrl,
+      registration: optText,
+      draft: flag,
     })
     .refine((e) => e.date || e.recurring, {
       message: 'Each event needs either a `date` or a `recurring` description.',
     }),
 });
 
-export const collections = { places, events };
+// Editable page wording, one YAML file per page in src/content/copy/.
+// Edited through the CMS (/admin). Shapes are documented in src/lib/copy.ts.
+const copy = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/copy' }),
+  schema: z.record(z.string(), z.any()),
+});
+
+export const collections = { places, events, copy };

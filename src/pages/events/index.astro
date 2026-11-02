@@ -4,6 +4,9 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import EventCard from '../../components/EventCard.astro';
 import { splitEvents, monthLabel, isoDay } from '../../lib/events';
+import { getCopy, mdi } from '../../lib/copy';
+
+const t = await getCopy('events-page');
 
 const { upcoming, recurring } = splitEvents(await getCollection('events'));
 
@@ -23,9 +26,9 @@ for (const e of upcoming) {
   <section class="page-hero">
     <div class="container hero-row">
       <div>
-        <span class="eyebrow">Events</span>
-        <h1>Things to do together</h1>
-        <p>Sensory-friendly showings, inclusive meetups, adaptive sports, and family events around Pennsylvania.</p>
+        <span class="eyebrow">{t.eyebrow}</span>
+        <h1>{t.title}</h1>
+        <p>{t.intro}</p>
       </div>
       <a class="btn btn-primary" href="/submit-event/"><Icon name="plus" size={18} /> Share an event</a>
     </div>
@@ -33,7 +36,7 @@ for (const e of upcoming) {
 
   <section class="section-tight">
     <div class="container">
-      <h2 class="group-title">Coming up</h2>
+      <h2 class="group-title">{t.upcoming_title}</h2>
       {
         upcoming.length > 0 ? (
           [...groups.entries()].map(([key, list]) => (
@@ -51,9 +54,8 @@ for (const e of upcoming) {
       <div class="empty card" id="events-empty" hidden={upcoming.length > 0}>
         <Icon name="calendar" size={28} />
         <p>
-          <strong>No one-time events are posted right now.</strong><br />
-          Check the recurring programs below, or <a href="/submit-event/">tell us about an event</a> you’re hosting or
-          attending.
+          <strong>{t.empty_title}</strong><br />
+          <span set:html={mdi(t.empty_text)} />
         </p>
       </div>
     </div>
@@ -63,8 +65,8 @@ for (const e of upcoming) {
     recurring.length > 0 && (
       <section class="section-tight recurring">
         <div class="container">
-          <h2 class="group-title">Recurring programs</h2>
-          <p class="sub">Regular sensory-friendly times you can count on. Schedules vary by location — check before you go.</p>
+          <h2 class="group-title">{t.recurring_title}</h2>
+          <p class="sub">{t.recurring_intro}</p>
           <div class="grid grid-2">
             {recurring.map((e) => (
               <EventCard event={e} />
@@ -79,11 +81,8 @@ for (const e of upcoming) {
     <div class="container">
       <div class="host card">
         <div>
-          <h2>Hosting something inclusive?</h2>
-          <p>
-            Sensory-friendly hours, adaptive sports, support-group picnics, inclusive story times — if families of kids with
-            special needs would feel welcome, we’d love to share it. It’s free.
-          </p>
+          <h2>{t.host_title}</h2>
+          <p>{t.host_text}</p>
         </div>
         <a class="btn btn-primary" href="/submit-event/">Share an event</a>
       </div>

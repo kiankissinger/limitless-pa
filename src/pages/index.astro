@@ -6,23 +6,18 @@ import PlaceCard from '../components/PlaceCard.astro';
 import EventCard from '../components/EventCard.astro';
 import { categories } from '../data/taxonomy';
 import { splitEvents } from '../lib/events';
+import { getCopy, mdi } from '../lib/copy';
 
-const places = (await getCollection('places')).filter((p) => !p.data.draft);
+const t = await getCopy('home');
+const places = (await getCollection('places'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
 const events = await getCollection('events');
 const { upcoming, recurring } = splitEvents(events);
 
 const featured = [...places.filter((p) => p.data.featured), ...places.filter((p) => !p.data.featured)].slice(0, 6);
 const eventPreview = [...upcoming, ...recurring].slice(0, 4);
 const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter((p) => p.data.category === c.id).length]));
-
-const lookFor = [
-  { icon: 'headphones', title: 'Calmer spaces', text: 'A quiet room, a corner away from the music, or headphones to borrow.' },
-  { icon: 'clock', title: 'Sensory-friendly times', text: 'Hours with lights down, sound low, and fewer people around.' },
-  { icon: 'heart', title: 'Patient, trained staff', text: 'People who know that a meltdown isn’t misbehavior — and don’t rush you.' },
-  { icon: 'calendar', title: 'Ways to plan ahead', text: 'Photos, social stories, or a walkthrough so nothing is a surprise.' },
-  { icon: 'sparkle', title: 'Flexible routines', text: 'First appointment of the day, extra time, breaks whenever you need them.' },
-  { icon: 'people', title: 'Room to be yourself', text: 'Kids can move, stim, flap, and make noise — no side-eye.' },
-] as const;
 ---
 
 <Base>
@@ -30,17 +25,14 @@ const lookFor = [
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <span class="eyebrow">Pennsylvania · For families of kids with special needs</span>
-        <h1>Find the places where your kid can just be a kid.</h1>
-        <p class="lead">
-          Limitless PA is a free guide to sensory-friendly businesses, inclusive events, and welcoming spaces across
-          Pennsylvania — from a barbershop with a quiet room to a movie with the lights up.
-        </p>
+        <span class="eyebrow">{t.hero.eyebrow}</span>
+        <h1>{t.hero.title}</h1>
+        <p class="lead">{t.hero.intro}</p>
 
         <form class="hero-search" action="/places/" method="get" role="search">
           <label for="hero-q" class="visually-hidden">Search places</label>
           <Icon name="search" size={22} />
-          <input id="hero-q" name="q" type="search" placeholder="Haircuts, movies, quiet room…" />
+          <input id="hero-q" name="q" type="search" placeholder={t.hero.search_placeholder} />
           <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
@@ -55,15 +47,12 @@ const lookFor = [
           <div class="art-head">
             <span class="art-icon"><Icon name="scissors" size={22} /></span>
             <div>
-              <strong>Your neighborhood barbershop</strong>
-              <span>Haircuts &amp; grooming</span>
+              <strong>{t.example.title}</strong>
+              <span>{t.example.category}</span>
             </div>
           </div>
           <ul>
-            <li><Icon name="check" size={18} /> Quiet room in the back</li>
-            <li><Icon name="check" size={18} /> First appointment of the day</li>
-            <li><Icon name="check" size={18} /> Clippers off — scissors only</li>
-            <li><Icon name="check" size={18} /> No rush, breaks anytime</li>
+            {(t.example.items ?? []).map((item: string) => <li><Icon name="check" size={18} /> {item}</li>)}
           </ul>
         </div>
       </div>
@@ -75,8 +64,7 @@ const lookFor = [
     <div class="container strip-inner">
       <Icon name="shield" size={26} />
       <p>
-        <strong>Everything that isn’t a doctor’s office.</strong> We’re a community group, not medical professionals. We focus on
-        the rest of life — haircuts, birthdays, movie nights, and Saturday mornings out.
+        <strong>{t.notice.title}</strong> {t.notice.text}
       </p>
     </div>
   </section>
@@ -85,8 +73,8 @@ const lookFor = [
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Browse by what you need</span>
-        <h2>Where do you want to go?</h2>
+        <span class="eyebrow">{t.categories.eyebrow}</span>
+        <h2>{t.categories.title}</h2>
       </div>
       <ul class="cat-grid">
         {
@@ -115,8 +103,8 @@ const lookFor = [
         <div class="container">
           <div class="head-row">
             <div class="section-head">
-              <span class="eyebrow">Sensory-friendly places</span>
-              <h2>Places making room for every kid</h2>
+              <span class="eyebrow">{t.featured.eyebrow}</span>
+              <h2>{t.featured.title}</h2>
             </div>
             <a class="btn btn-secondary" href="/places/">
               See all places
@@ -136,19 +124,16 @@ const lookFor = [
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">What we look for</span>
-        <h2>Small changes that make a big difference</h2>
-        <p>
-          A business doesn’t need to be perfect to be listed. We look for real, practical accommodations that make an outing
-          easier for kids with sensory needs — and for the grown-ups with them.
-        </p>
+        <span class="eyebrow">{t.look_for.eyebrow}</span>
+        <h2>{t.look_for.title}</h2>
+        <p>{t.look_for.intro}</p>
       </div>
       <ul class="look-grid">
         {
-          lookFor.map((l) => (
+          (t.look_for.items ?? []).map((l: { icon: any; title: string; text: string }) => (
             <li class="look card">
               <span class="look-icon">
-                <Icon name={l.icon} size={24} />
+                <Icon name={l.icon || 'check'} size={24} />
               </span>
               <h3>{l.title}</h3>
               <p>{l.text}</p>
@@ -164,8 +149,8 @@ const lookFor = [
     <div class="container">
       <div class="head-row">
         <div class="section-head">
-          <span class="eyebrow">Things to do</span>
-          <h2>Upcoming &amp; recurring events</h2>
+          <span class="eyebrow">{t.events.eyebrow}</span>
+          <h2>{t.events.title}</h2>
         </div>
         <a class="btn btn-secondary" href="/events/">All events</a>
       </div>
@@ -178,9 +163,7 @@ const lookFor = [
           </div>
         ) : (
           <div class="empty card">
-            <p>
-              We’re gathering events now. Hosting something inclusive? <a href="/submit-event/">Share your event</a>.
-            </p>
+            <p set:html={mdi(t.events.empty)} />
           </div>
         )
       }
@@ -192,21 +175,15 @@ const lookFor = [
     <div class="container grid grid-2">
       <div class="cta card">
         <span class="cta-icon"><Icon name="heart" size={28} /></span>
-        <h2>Know a great place?</h2>
-        <p>
-          The best recommendations come from families. If a business made your kid feel welcome, tell us about it — we’ll
-          check it out and add it to the guide.
-        </p>
-        <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
+        <h2>{t.cta_suggest.title}</h2>
+        <p>{t.cta_suggest.text}</p>
+        <a class="btn btn-primary" href="/suggest/">{t.cta_suggest.button}</a>
       </div>
       <div class="cta card cta-green">
         <span class="cta-icon"><Icon name="store" size={28} /></span>
-        <h2>Own a business?</h2>
-        <p>
-          Whether you already offer sensory-friendly options or want to start, we’d love to hear from you. Listing is free,
-          and we can share simple ideas that cost little or nothing.
-        </p>
-        <a class="btn btn-secondary" href="/for-businesses/">For businesses</a>
+        <h2>{t.cta_business.title}</h2>
+        <p>{t.cta_business.text}</p>
+        <a class="btn btn-secondary" href="/for-businesses/">{t.cta_business.button}</a>
       </div>
     </div>
   </section>

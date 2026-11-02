@@ -1,14 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import { getCopy } from '../lib/copy';
+
+const t = (await getCopy('forms')).thank_you;
 ---
 
 <Base title="Thank you" noindex>
   <section class="section">
     <div class="container thanks">
       <span class="badge"><Icon name="check" size={36} /></span>
-      <h1>Thank you!</h1>
-      <p>We got it. A real person will read your note, and we’ll reach out if we have any questions.</p>
+      <h1>{t.title}</h1>
+      <p>{t.text}</p>
       <div class="actions">
         <a class="btn btn-primary" href="/places/">Browse places</a>
         <a class="btn btn-secondary" href="/">Back to home</a>

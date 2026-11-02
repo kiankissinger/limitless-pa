@@ -2,6 +2,9 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { regions, accommodations } from '../data/taxonomy';
+import { getCopy, md } from '../lib/copy';
+
+const t = (await getCopy('forms')).event;
 ---
 
 <Base
@@ -10,12 +13,9 @@ import { regions, accommodations } from '../data/taxonomy';
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">Share an event</span>
-      <h1>Tell families what’s happening</h1>
-      <p>
-        Sensory-friendly hours, adaptive sports, inclusive story times, meetups — if families of kids with special needs would
-        feel welcome, we’d love to post it. It’s free.
-      </p>
+      <span class="eyebrow">{t.eyebrow}</span>
+      <h1>{t.title}</h1>
+      <p>{t.intro}</p>
     </div>
   </section>
 
@@ -132,12 +132,8 @@ import { regions, accommodations } from '../data/taxonomy';
         <div class="card tip">
           <Icon name="calendar" size={22} />
           <div>
-            <h2>A few guidelines</h2>
-            <ul>
-              <li>Events should welcome kids with special needs and their families.</li>
-              <li>We don’t post medical, clinical, or therapy services.</li>
-              <li>Please submit at least a week ahead so we can get it posted.</li>
-            </ul>
+            <h2>{t.guidelines_title}</h2>
+            <Fragment set:html={md(t.guidelines_body)} />
           </div>
         </div>
       </aside>

@@ -2,6 +2,9 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { categories, regions, accommodations } from '../data/taxonomy';
+import { getCopy, md } from '../lib/copy';
+
+const t = (await getCopy('forms')).suggest;
 ---
 
 <Base
@@ -10,12 +13,9 @@ import { categories, regions, accommodations } from '../data/taxonomy';
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">Suggest a place</span>
-      <h1>Know somewhere that gets it?</h1>
-      <p>
-        Tell us about a business that made your family feel welcome — or, if it’s your business, tell us what you offer. We
-        review every suggestion before it’s listed.
-      </p>
+      <span class="eyebrow">{t.eyebrow}</span>
+      <h1>{t.title}</h1>
+      <p>{t.intro}</p>
     </div>
   </section>
 
@@ -116,19 +116,15 @@ import { categories, regions, accommodations } from '../data/taxonomy';
         <div class="card tip">
           <Icon name="info" size={22} />
           <div>
-            <h2>What happens next</h2>
-            <ol>
-              <li>We read every suggestion.</li>
-              <li>We confirm details with the business.</li>
-              <li>We add it to the guide — usually within a couple of weeks.</li>
-            </ol>
+            <h2>{t.next_title}</h2>
+            <Fragment set:html={md(t.next_body)} />
           </div>
         </div>
         <div class="card tip">
           <Icon name="store" size={22} />
           <div>
-            <h2>Business owner?</h2>
-            <p>Listing is free. See <a href="/for-businesses/">simple ideas for becoming sensory-friendly</a>.</p>
+            <h2>{t.owner_title}</h2>
+            <Fragment set:html={md(t.owner_body)} />
           </div>
         </div>
       </aside>
