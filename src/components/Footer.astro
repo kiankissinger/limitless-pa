@@ -49,7 +49,11 @@ const year = new Date().getFullYear();
       <p class="bottom-links">
         <a href="/privacy/">Privacy</a>
         <span class="credit">
-          Website donated by <a href="https://clientbridgeusa.com" target="_blank" rel="noopener">ClientBridgeUSA</a>
+          Website donated by
+          <a class="cb" href="https://clientbridgeusa.com" target="_blank" rel="noopener">
+            <img class="cb-mark" src="/partners/clientbridgeusa/mark.svg" alt="" width="48" height="20" />
+            <img class="cb-wordmark" src="/partners/clientbridgeusa/wordmark.svg" alt="ClientBridgeUSA" width="104" height="13" />
+          </a>
         </span>
       </p>
     </div>
@@ -141,6 +145,28 @@ const year = new Date().getFullYear();
   .bottom-links {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px 20px;
+  }
+  .credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  /* ClientBridgeUSA logo: their files, unaltered, sized in the same
+     proportions their own site uses (mark 28px : text 1.2rem). */
+  .cb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .cb-mark {
+    height: 20px;
+    width: auto;
+  }
+  .cb-wordmark {
+    height: 13px;
+    width: auto;
   }
 </style>
