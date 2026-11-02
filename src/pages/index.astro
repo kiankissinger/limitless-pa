@@ -69,7 +69,6 @@ const lookFor = [
         <div class="art-chip c1"><Icon name="film" size={18} /> Lights up, sound down</div>
         <div class="art-chip c2"><Icon name="headphones" size={18} /> Headphones to borrow</div>
         <div class="art-chip c3"><Icon name="clock" size={18} /> Sensory hours</div>
-        <img class="art-mark" src="/brand/logo-mark.svg" alt="" width="96" height="95" />
       </div>
     </div>
   </section>
@@ -210,7 +209,7 @@ const lookFor = [
           Whether you already offer sensory-friendly options or want to start, we’d love to hear from you. Listing is free,
           and we can share simple ideas that cost little or nothing.
         </p>
-        <a class="btn btn-green" href="/for-businesses/">For businesses</a>
+        <a class="btn btn-secondary" href="/for-businesses/">For businesses</a>
       </div>
     </div>
   </section>
@@ -219,9 +218,7 @@ const lookFor = [
 <style>
   /* Hero */
   .hero {
-    background:
-      radial-gradient(1200px 500px at 85% -10%, var(--brand-green-soft), transparent 60%),
-      linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+    background: #fff;
     padding-block: clamp(40px, 7vw, 88px);
     overflow: hidden;
   }
@@ -258,7 +255,7 @@ const lookFor = [
   }
   .hero-search:focus-within {
     border-color: var(--brand-primary);
-    outline: 3px solid color-mix(in srgb, var(--brand-primary) 20%, transparent);
+    outline: 2px solid var(--brand-primary);
   }
   .hero-search > :global(svg) {
     color: var(--ink-muted);
@@ -321,7 +318,7 @@ const lookFor = [
   }
   .art-head span {
     font-size: 0.9rem;
-    color: var(--brand-green-strong);
+    color: var(--brand-primary);
     font-weight: 700;
   }
   .art-icon {
@@ -330,8 +327,8 @@ const lookFor = [
     width: 48px;
     height: 48px;
     border-radius: 14px;
-    background: var(--brand-green-soft);
-    color: var(--brand-green-strong);
+    background: var(--surface-alt);
+    color: var(--brand-primary);
     flex-shrink: 0;
   }
   .art-card ul {
@@ -368,7 +365,7 @@ const lookFor = [
     white-space: nowrap;
   }
   .art-chip :global(svg) {
-    color: #cfe0c2;
+    color: #fff;
   }
   .c1 {
     top: 0;
@@ -377,7 +374,7 @@ const lookFor = [
   .c2 {
     bottom: 8px;
     left: 0;
-    background: var(--brand-green-strong);
+    background: var(--brand-primary);
   }
   .c2 :global(svg) {
     color: #fff;
@@ -392,16 +389,6 @@ const lookFor = [
   .c3 :global(svg) {
     color: var(--brand-green);
   }
-  .art-mark {
-    position: absolute;
-    top: 10px;
-    left: -6px;
-    z-index: 1;
-    width: 64px;
-    height: auto;
-    transform: rotate(-8deg);
-    filter: drop-shadow(0 6px 14px rgb(17 64 78 / 18%));
-  }
   @media (max-width: 600px) {
     .hero-art {
       display: none;
@@ -411,7 +398,7 @@ const lookFor = [
   /* Strip */
   .strip {
     background: var(--brand-primary);
-    color: #e3edf0;
+    color: #fff;
   }
   .strip-inner {
     display: flex;
@@ -421,7 +408,7 @@ const lookFor = [
   }
   .strip-inner :global(svg) {
     flex-shrink: 0;
-    color: #b9cfa8;
+    color: #fff;
   }
   .strip p {
     margin: 0;
@@ -463,7 +450,7 @@ const lookFor = [
     width: 48px;
     height: 48px;
     border-radius: 14px;
-    background: var(--brand-primary-soft);
+    background: var(--surface-alt);
     color: var(--brand-primary);
     flex-shrink: 0;
   }
@@ -512,8 +499,8 @@ const lookFor = [
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: var(--brand-green-soft);
-    color: var(--brand-green-strong);
+    background: var(--surface-alt);
+    color: var(--brand-primary);
     margin-bottom: 12px;
   }
   .look h3 {
@@ -536,12 +523,12 @@ const lookFor = [
   /* CTAs */
   .cta {
     padding: clamp(24px, 4vw, 40px);
-    background: var(--brand-primary-soft);
+    background: var(--surface-alt);
     border-color: transparent;
     box-shadow: none;
   }
   .cta-green {
-    background: var(--brand-green-soft);
+    background: var(--surface-alt);
   }
   .cta-icon {
     display: inline-grid;
@@ -554,7 +541,7 @@ const lookFor = [
     margin-bottom: 16px;
   }
   .cta-green .cta-icon {
-    color: var(--brand-green-strong);
+    color: var(--brand-primary);
   }
   .cta h2 {
     color: var(--brand-primary);

@@ -1,28 +1,32 @@
 /*
-  BRAND TOKENS
-  ------------------------------------------------------------------
-  From the Limitless PA brand sheet (design/Branding-limitlesspa.svg):
+  BRAND COLORS — from the Limitless PA brand sheet (design/Branding-limitlesspa.svg).
+  Use these exact values only. Do not create tints, shades, or new brand colors.
     Deep teal  #11404e  (R17 G64 B78)
     Sage green #6b8753  (R107 G135 B83)
-  Every page and component pulls from these variables.
+    Text       #231f20  (text color used on the brand sheet)
+  Everything else is white or a neutral gray.
 */
 :root {
-  --brand-primary: #11404e;        /* deep teal: headings, buttons, links */
-  --brand-primary-strong: #0a2b35; /* hover / pressed */
-  --brand-primary-soft: #e5eef0;   /* tinted backgrounds */
-  --brand-green: #6b8753;          /* sage: logo mark, large accents (not small text) */
-  --brand-green-strong: #4f6a3b;   /* sage dark enough for small text on light bg */
-  --brand-green-soft: #ebf1e4;
-  --brand-accent: #6b8753;
-  --brand-accent-soft: #f3eedf;    /* warm sand for callouts */
+  --brand-teal: #11404e;
+  --brand-green: #6b8753;
+  --brand-text: #231f20;
 
-  --ink: #14303a;
-  --ink-muted: #4a5f66;
-  --bg: #fbf9f4;
-  --surface: #ffffff;
-  --surface-alt: #f3f0e7;
-  --line: #e2ddd0;
-  --focus: #2b6cd4;
+  /* Neutrals (not brand colors) */
+  --white: #ffffff;
+  --gray-50: #f6f6f6;
+  --gray-200: #e2e2e2;
+  --gray-400: #b5b5b5;
+  --gray-700: #555555;
+
+  /* Roles — map to the values above */
+  --brand-primary: var(--brand-teal);
+  --ink: var(--brand-text);
+  --ink-muted: var(--gray-700);
+  --bg: var(--white);
+  --surface: var(--white);
+  --surface-alt: var(--gray-50);
+  --line: var(--gray-200);
+  --focus: var(--brand-teal);
 
   --font-display: 'Lexend', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -30,8 +34,8 @@
   --radius-sm: 8px;
   --radius: 14px;
   --radius-lg: 22px;
-  --shadow: 0 1px 2px rgb(27 42 50 / 6%), 0 4px 14px rgb(27 42 50 / 6%);
-  --shadow-lift: 0 2px 4px rgb(27 42 50 / 8%), 0 10px 28px rgb(27 42 50 / 10%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 6%), 0 4px 14px rgb(0 0 0 / 6%);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 7%), 0 10px 28px rgb(0 0 0 / 9%);
   --container: 1120px;
   --gutter: clamp(16px, 4vw, 32px);
 }
@@ -96,7 +100,7 @@ a {
   text-decoration-thickness: 1px;
 }
 a:hover {
-  color: var(--brand-primary-strong);
+  color: var(--brand-primary);
   text-decoration-thickness: 2px;
 }
 
@@ -170,36 +174,21 @@ a:hover {
 }
 .btn-primary {
   background: var(--brand-primary);
+  border-color: var(--brand-primary);
   color: #fff;
 }
 .btn-primary:hover {
-  background: var(--brand-primary-strong);
-  color: #fff;
-}
-.btn-secondary {
-  background: var(--surface);
-  color: var(--brand-primary-strong);
-  border-color: var(--brand-primary);
-}
-.btn-secondary:hover {
-  background: var(--brand-primary-soft);
-  color: var(--brand-primary-strong);
-}
-.btn-green {
-  background: var(--brand-green-strong);
-  color: #fff;
-}
-.btn-green:hover {
-  background: #3e5530;
-  color: #fff;
-}
-.btn-light {
   background: #fff;
   color: var(--brand-primary);
 }
-.btn-light:hover {
-  background: var(--brand-green-soft);
+.btn-secondary {
+  background: #fff;
   color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+.btn-secondary:hover {
+  background: var(--brand-primary);
+  color: #fff;
 }
 
 /* Sections */
@@ -224,13 +213,13 @@ a:hover {
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--brand-green-strong);
+  color: var(--brand-primary);
   margin-bottom: 10px;
 }
 
 /* Page header (interior pages) */
 .page-hero {
-  background: var(--brand-primary-soft);
+  background: var(--surface-alt);
   border-bottom: 1px solid var(--line);
   padding-block: clamp(36px, 6vw, 64px);
 }
@@ -257,8 +246,9 @@ a:hover {
   line-height: 1.3;
   padding: 4px 10px;
   border-radius: 999px;
-  background: var(--brand-green-soft);
-  color: #3d5530;
+  background: #fff;
+  border: 1px solid var(--brand-green);
+  color: var(--brand-primary);
 }
 
 /* Cards */
@@ -339,7 +329,7 @@ a:hover {
   font: inherit;
   color: var(--ink);
   background: var(--surface);
-  border: 1.5px solid #cfc5b5;
+  border: 1.5px solid var(--gray-400);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   min-height: 48px;
@@ -352,7 +342,7 @@ a:hover {
 .field select:focus,
 .field textarea:focus {
   border-color: var(--brand-primary);
-  outline: 3px solid color-mix(in srgb, var(--brand-primary) 25%, transparent);
+  outline: 2px solid var(--brand-primary);
   outline-offset: 0;
 }
 fieldset.field {
@@ -398,7 +388,7 @@ fieldset.field {
   }
 }
 .req {
-  color: #a3361f;
+  color: var(--brand-primary);
   font-weight: 400;
 }
 .honeypot {
@@ -411,13 +401,13 @@ fieldset.field {
   align-items: flex-start;
   padding: 16px 18px;
   border-radius: var(--radius);
-  background: var(--brand-accent-soft);
-  border: 1px solid #e3d8bb;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
 }
 .notice svg {
   flex-shrink: 0;
   margin-top: 2px;
-  color: var(--brand-green-strong);
+  color: var(--brand-primary);
 }
 .notice p:last-child {
   margin-bottom: 0;
@@ -454,12 +444,12 @@ fieldset.field {
   gap: 14px;
   padding: 20px;
   box-shadow: none;
-  background: var(--brand-green-soft);
+  background: var(--surface-alt);
   border-color: transparent;
 }
 .tip > svg {
   flex-shrink: 0;
-  color: var(--brand-green-strong);
+  color: var(--brand-primary);
   margin-top: 2px;
 }
 .tip h2 {

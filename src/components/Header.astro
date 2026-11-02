@@ -10,7 +10,7 @@ const isActive = (href: string) => path === href || path.startsWith(href);
 <header class="site-header">
   <div class="container bar">
     <a href="/" class="brand" aria-label="Limitless PA home">
-      <Logo height={46} />
+      <Logo variant="horizontal" height={52} />
     </a>
 
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
@@ -58,7 +58,7 @@ const isActive = (href: string) => path === href || path.startsWith(href);
     flex-shrink: 0;
   }
   .brand :global(img) {
-    height: 42px;
+    height: 52px;
     width: auto;
   }
 
@@ -70,7 +70,7 @@ const isActive = (href: string) => path === href || path.startsWith(href);
     font-family: var(--font-display);
     font-weight: 500;
     color: var(--brand-primary);
-    background: var(--brand-primary-soft);
+    background: var(--surface-alt);
     border: 0;
     border-radius: 999px;
     padding: 10px 16px 10px 12px;
@@ -110,12 +110,12 @@ const isActive = (href: string) => path === href || path.startsWith(href);
     text-decoration: none;
   }
   .nav ul a:hover {
-    background: var(--brand-primary-soft);
+    background: var(--surface-alt);
     color: var(--brand-primary);
   }
   .nav ul a[aria-current='page'] {
     color: var(--brand-primary);
-    background: var(--brand-green-soft);
+    background: var(--surface-alt);
   }
   .nav-cta {
     min-height: 44px;
@@ -154,7 +154,7 @@ const isActive = (href: string) => path === href || path.startsWith(href);
   }
   @media (max-width: 400px) {
     .brand :global(img) {
-      height: 36px;
+      height: 42px;
     }
     .menu-label {
       display: none;

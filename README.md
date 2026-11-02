@@ -126,21 +126,35 @@ an email notification. Spam filtering (Akismet plus a honeypot field) is on by d
 
 Reviewing a submission means turning it into a Markdown file (see above) and committing it.
 
-## Brand
+## Brand — do not modify
 
-From the official brand sheet (`design/Branding-limitlesspa.svg`):
+All brand assets were created by Limitless PA's designer. **Do not recolor, crop, restyle, or
+redraw the logo, change the tagline wording, or add new brand colors.**
+
+**Colors** (exact values from `design/Branding-limitlesspa.svg`):
 
 | Color      | Hex       |
 | ---------- | --------- |
 | Deep teal  | `#11404e` |
 | Sage green | `#6b8753` |
+| Text       | `#231f20` |
 
-The logo font is **Co Headline**. It's a commercial font, so the logo files are outlined SVGs, and the website
-uses free fonts that sit well next to it: **Lexend** for headings and **Atkinson Hyperlegible** for body text,
-which was designed for maximum readability.
+Everything else on the site is white or a neutral gray. Tokens live at the top of `src/styles/global.css`.
 
-Logo variants in `public/brand/`: `logo-header` (mark + wordmark), `logo-horizontal` (with tagline),
-`logo-stacked`, `logo-mark`, `logo-domain`, plus `-white` versions for dark backgrounds.
+**Logo files** in `public/brand/` were cut directly from the brand sheet. Each file's paths are copied
+verbatim, and each renders pixel-identical to the same lockup on the original sheet:
+
+- `logo-horizontal.svg` (mark + wordmark + tagline), used in the header and footer
+- `logo-stacked.svg`
+- `logo-mark.svg`, also used for the favicon and app icons
+- `logo-domain.svg` (limitlesspa.org)
+
+**Tagline** (exact): "Connecting Families. Celebrating Inclusion. Strengthening Community."
+
+**Typeface.** The brand font is **Co Headline**, a commercial Monotype font. Its web use needs a web
+license, and that license isn't in this repo, so the website currently uses free stand-ins: Lexend for
+headings and Atkinson Hyperlegible for body text. If Limitless PA has (or buys) Co Headline web font files,
+add them under `public/fonts/` with an `@font-face` rule and set `--font-display` in `src/styles/global.css`.
 
 ## Accessibility notes
 

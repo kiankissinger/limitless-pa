@@ -9,7 +9,7 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="top">
       <div class="about">
-        <Logo variant="header-white" height={52} />
+        <Logo variant="horizontal" height={64} />
         <p>
           A free, community-built guide to the places, events, and people across Pennsylvania that make room for every
           kid.
@@ -53,16 +53,13 @@ const year = new Date().getFullYear();
 
 <style>
   .site-footer {
-    background: var(--brand-primary);
-    color: #dbe7ea;
+    background: var(--surface-alt);
+    border-top: 1px solid var(--line);
+    color: var(--ink);
     padding-block: 56px 28px;
-    margin-top: 0;
   }
   .site-footer a {
-    color: #fff;
-  }
-  .site-footer a:hover {
-    color: #cfe0c2;
+    color: var(--brand-primary);
   }
   .top {
     display: grid;
@@ -74,16 +71,18 @@ const year = new Date().getFullYear();
     }
   }
   .about :global(img) {
-    height: 52px;
+    height: 64px;
     width: auto;
+    max-width: 100%;
     margin-bottom: 16px;
   }
   .about p {
     max-width: 40ch;
+    color: var(--ink-muted);
   }
   h2 {
     font-size: 1rem;
-    color: #fff;
+    color: var(--brand-primary);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     margin-bottom: 12px;
@@ -108,14 +107,14 @@ const year = new Date().getFullYear();
     margin-top: 40px;
     padding: 18px 20px;
     border-radius: var(--radius);
-    background: rgb(255 255 255 / 7%);
-    border: 1px solid rgb(255 255 255 / 14%);
+    background: #fff;
+    border: 1px solid var(--line);
     font-size: 0.95rem;
   }
   .disclaimer :global(svg) {
     flex-shrink: 0;
     margin-top: 2px;
-    color: #b9cfa8;
+    color: var(--brand-primary);
   }
   .disclaimer p {
     margin: 0;
@@ -127,9 +126,9 @@ const year = new Date().getFullYear();
     gap: 8px 24px;
     margin-top: 28px;
     padding-top: 20px;
-    border-top: 1px solid rgb(255 255 255 / 14%);
+    border-top: 1px solid var(--line);
     font-size: 0.9rem;
-    color: #b6c9ce;
+    color: var(--ink-muted);
   }
   .bottom p {
     margin: 0;
