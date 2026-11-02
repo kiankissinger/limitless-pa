@@ -1,0 +1,157 @@
+# Limitless PA — limitlesspa.org
+
+**Connecting Families. Celebrating Inclusion. Strengthening Community.**
+
+A free guide to sensory-friendly businesses, inclusive events, and everyday (non-medical) resources for
+Pennsylvania families raising children with special needs, especially autistic kids.
+
+Built with [Astro](https://astro.build) as a fully static site and hosted on Netlify. No database and no
+server: listings are plain Markdown files in this repo, and form submissions go to Netlify Forms.
+
+---
+
+## Quick start
+
+```bash
+npm install
+npm run dev        # http://localhost:4321
+npm run build      # outputs to dist/
+```
+
+Requires Node 20+.
+
+## Project layout
+
+```
+src/
+  content/
+    places/        ← one .md file per business / venue
+    events/        ← one .md file per event or recurring program
+  data/
+    taxonomy.ts    ← categories, regions, accommodation tags
+    site.ts        ← site name, tagline, nav links
+  pages/           ← every page on the site
+  components/      ← header, footer, cards, icons, logo
+  styles/global.css← brand colors + shared styles (see BRAND TOKENS at top)
+public/
+  brand/           ← logo files (extracted from design/Branding-limitlesspa.svg)
+design/            ← original brand sheet from Limitless PA
+```
+
+---
+
+## Adding a place
+
+Create a new file in `src/content/places/`. The file name becomes the web address, so
+`quiet-corner-barbershop.md` is published at `/places/quiet-corner-barbershop/`.
+
+```markdown
+---
+name: Quiet Corner Barbershop
+category: haircuts-grooming        # see src/data/taxonomy.ts for the list
+region: Southwestern PA            # Statewide, Southeastern PA, Lehigh Valley, Northeastern PA,
+                                   # Central PA, Southwestern PA, Northwestern PA
+city: Pittsburgh
+address: 123 Main St, Pittsburgh, PA 15222
+summary: One or two plain-language sentences parents will see on the card.
+accommodations:
+  - Quiet space
+  - Flexible appointments
+  - Trained staff
+schedule: Sensory-friendly appointments Tuesday mornings
+ages: All ages
+cost: Regular prices
+website: https://example.com
+phone: (412) 555-0100
+verified: 2026-11-01               # the date you last confirmed the details
+featured: false                    # true = shows first on the home page
+draft: false                       # true = hidden from the site
+---
+
+Optional longer notes go here ("Good to know" on the listing page). Markdown works.
+```
+
+Only `name`, `category`, `region`, and `summary` are required.
+
+**Accommodation tags.** Use the names in `src/data/taxonomy.ts` (for example "Quiet space",
+"Sensory hours", "Noise-reducing headphones") so they show up as filters. You can write other tags too.
+They'll display on the listing but won't be filterable.
+
+## Adding an event
+
+Create a file in `src/content/events/`. For a **one-time event**:
+
+```markdown
+---
+title: Sensory-Friendly Holiday Photos
+host: Example Library
+date: 2026-12-06
+startTime: "10:00"        # 24-hour clock, Eastern time, in quotes
+endTime: "12:00"
+location: Example Library, 1 Main St
+city: Harrisburg
+region: Central PA
+cost: Free
+ages: All ages
+summary: Quiet, unhurried photos with Santa. Lights low and no lines.
+accommodations:
+  - Quiet space
+  - Low-crowd times
+url: https://example.com/event
+registration: Sign up online. Spots are limited.
+---
+```
+
+For a **recurring program**, leave out `date` and add `recurring: First Sunday of every month`.
+
+One-time events disappear from the Events page by themselves after their date passes (`endDate`
+works for multi-day events). Every dated event also gets "Add to Google Calendar" and `.ics` download
+buttons.
+
+---
+
+## Forms (Netlify Forms)
+
+Three forms are detected automatically when the site deploys:
+
+| Form name        | Page             | Purpose                          |
+| ---------------- | ---------------- | -------------------------------- |
+| `suggest-place`  | `/suggest/`      | Families and owners suggest places |
+| `submit-event`   | `/submit-event/` | Hosts share events               |
+| `contact`        | `/contact/`      | General messages and corrections |
+
+Submissions show up in the Netlify dashboard under **Forms**. To get them by email, open
+**Project configuration → Notifications → Emails and webhooks → Form submission notifications** and add
+an email notification. Spam filtering (Akismet plus a honeypot field) is on by default.
+
+Reviewing a submission means turning it into a Markdown file (see above) and committing it.
+
+## Brand
+
+From the official brand sheet (`design/Branding-limitlesspa.svg`):
+
+| Color      | Hex       |
+| ---------- | --------- |
+| Deep teal  | `#11404e` |
+| Sage green | `#6b8753` |
+
+The logo font is **Co Headline**. It's a commercial font, so the logo files are outlined SVGs, and the website
+uses free fonts that sit well next to it: **Lexend** for headings and **Atkinson Hyperlegible** for body text,
+which was designed for maximum readability.
+
+Logo variants in `public/brand/`: `logo-header` (mark + wordmark), `logo-horizontal` (with tagline),
+`logo-stacked`, `logo-mark`, `logo-domain`, plus `-white` versions for dark backgrounds.
+
+## Accessibility notes
+
+The audience includes people with sensory sensitivities, so the site deliberately has:
+
+- no autoplaying media, carousels, pop-ups, or flashing animation, and `prefers-reduced-motion` is respected
+- a calm, low-glare palette and high text contrast
+- large tap targets, visible focus outlines, a skip link, and full keyboard navigation
+- filters that work with plain URLs (`/places/?category=haircuts-grooming&acc=Quiet+space`), so searches can be shared
+
+## Deploying
+
+Netlify builds the site from `netlify.toml` (`npm run build` → `dist/`). The `www.` host redirects to the bare
+`limitlesspa.org` domain.

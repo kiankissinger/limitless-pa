@@ -1,0 +1,176 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import EventCard from '../../components/EventCard.astro';
+import { splitEvents, monthLabel, isoDay } from '../../lib/events';
+
+const { upcoming, recurring } = splitEvents(await getCollection('events'));
+
+// Group upcoming events by month
+const groups = new Map<string, typeof upcoming>();
+for (const e of upcoming) {
+  const key = isoDay(e.data.date!).slice(0, 7);
+  if (!groups.has(key)) groups.set(key, []);
+  groups.get(key)!.push(e);
+}
+---
+
+<Base
+  title="Sensory-friendly & inclusive events"
+  description="Upcoming sensory-friendly and inclusive events for kids with special needs and their families across Pennsylvania."
+>
+  <section class="page-hero">
+    <div class="container hero-row">
+      <div>
+        <span class="eyebrow">Events</span>
+        <h1>Things to do together</h1>
+        <p>Sensory-friendly showings, inclusive meetups, adaptive sports, and family events around Pennsylvania.</p>
+      </div>
+      <a class="btn btn-primary" href="/submit-event/"><Icon name="plus" size={18} /> Share an event</a>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <h2 class="group-title">Coming up</h2>
+      {
+        upcoming.length > 0 ? (
+          [...groups.entries()].map(([key, list]) => (
+            <div class="month" data-month>
+              <h3 class="month-title">{monthLabel(new Date(`${key}-01T00:00:00Z`))}</h3>
+              <div class="grid grid-2">
+                {list.map((e) => (
+                  <EventCard event={e} />
+                ))}
+              </div>
+            </div>
+          ))
+        ) : null
+      }
+      <div class="empty card" id="events-empty" hidden={upcoming.length > 0}>
+        <Icon name="calendar" size={28} />
+        <p>
+          <strong>No one-time events are posted right now.</strong><br />
+          Check the recurring programs below, or <a href="/submit-event/">tell us about an event</a> you’re hosting or
+          attending.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    recurring.length > 0 && (
+      <section class="section-tight recurring">
+        <div class="container">
+          <h2 class="group-title">Recurring programs</h2>
+          <p class="sub">Regular sensory-friendly times you can count on. Schedules vary by location — check before you go.</p>
+          <div class="grid grid-2">
+            {recurring.map((e) => (
+              <EventCard event={e} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="host card">
+        <div>
+          <h2>Hosting something inclusive?</h2>
+          <p>
+            Sensory-friendly hours, adaptive sports, support-group picnics, inclusive story times — if families of kids with
+            special needs would feel welcome, we’d love to share it. It’s free.
+          </p>
+        </div>
+        <a class="btn btn-primary" href="/submit-event/">Share an event</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .group-title {
+    color: var(--brand-primary);
+    margin-bottom: 8px;
+  }
+  .sub {
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+  .month {
+    margin-top: 24px;
+  }
+  .month-title {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--brand-green-strong);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+  .empty {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 24px;
+    margin-top: 16px;
+    box-shadow: none;
+  }
+  .empty[hidden] {
+    display: none;
+  }
+  .empty :global(svg) {
+    color: var(--brand-green);
+    flex-shrink: 0;
+  }
+  .empty p {
+    margin: 0;
+  }
+  .recurring {
+    background: var(--surface-alt);
+  }
+  .host {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding: clamp(22px, 4vw, 36px);
+    background: var(--brand-green-soft);
+    border: 0;
+    box-shadow: none;
+  }
+  .host h2 {
+    color: var(--brand-primary);
+  }
+  .host p {
+    max-width: 60ch;
+    margin: 0;
+  }
+</style>
+
+<script>
+  // The site is rebuilt periodically; hide anything that ended since the last build.
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
+  document.querySelectorAll<HTMLElement>('[data-event][data-last-day]').forEach((el) => {
+    if ((el.dataset.lastDay ?? '') < today) el.remove();
+  });
+  document.querySelectorAll<HTMLElement>('[data-month]').forEach((m) => {
+    if (!m.querySelector('[data-event]')) m.remove();
+  });
+  if (!document.querySelector('[data-month]')) {
+    const empty = document.getElementById('events-empty');
+    if (empty) empty.hidden = false;
+  }
+</script>

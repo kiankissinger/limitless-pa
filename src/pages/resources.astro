@@ -1,0 +1,243 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+const tips = [
+  { icon: 'phone', title: 'Call ahead', text: 'Ask when it’s quietest, whether there’s somewhere calm to take a break, and if staff can expect you.' },
+  { icon: 'sparkle', title: 'Preview the visit', text: 'Look at photos or videos of the place together. A simple “first, then” story about what will happen helps a lot.' },
+  { icon: 'clock', title: 'Pick your time', text: 'Right at opening or during a weekday afternoon is often calmer than evenings and weekends.' },
+  { icon: 'bag', title: 'Pack a go-bag', text: 'Headphones, a favorite fidget, snacks, a drink, a comfort item, and a change of clothes.' },
+  { icon: 'arrow', title: 'Plan an exit', text: 'Decide ahead of time how you’ll take a break or leave early — and that leaving early still counts as a win.' },
+  { icon: 'heart', title: 'Celebrate the try', text: 'Ten great minutes is a success. Next time you can go a little longer.' },
+] as const;
+
+const questions = [
+  'When are your quietest days and times?',
+  'Is there a calm space we can use if we need a break?',
+  'Can we book the first or last appointment of the day?',
+  'Can the music or lights be turned down?',
+  'Do you have headphones or fidgets we can borrow, or should we bring our own?',
+  'Do you have photos or a guide we can look at before we come?',
+  'Is it okay if my child needs to walk around, make noise, or step out?',
+];
+
+const orgs = [
+  {
+    name: 'PA 211',
+    url: 'https://www.pa211.org/',
+    text: 'A free, confidential line that connects Pennsylvanians with local community services. Dial 211 or search online.',
+  },
+  {
+    name: 'PEAL Center',
+    url: 'https://www.pealcenter.org/',
+    text: 'A statewide nonprofit that offers free help to families of children with disabilities and special health care needs, including support with schools and navigating services.',
+  },
+  {
+    name: 'PA Autism (paautism.org)',
+    url: 'https://paautism.org/',
+    text: 'Pennsylvania’s statewide autism information site, with a resource directory, events calendar, and support groups.',
+  },
+  {
+    name: 'Special Olympics Pennsylvania',
+    url: 'https://www.specialolympicspa.org/',
+    text: 'Year-round sports and play programs for children and adults with intellectual disabilities, with programs across the state.',
+  },
+];
+---
+
+<Base
+  title="Resources for families"
+  description="Practical tips for planning sensory-friendly outings, questions to ask businesses, and helpful Pennsylvania organizations."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Resources</span>
+      <h1>Tools for easier outings</h1>
+      <p>Practical, parent-tested ideas for getting out the door — and a few Pennsylvania organizations worth knowing.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Planning a great outing</h2>
+        <p>None of these are rules. Use what works for your kid and skip what doesn’t.</p>
+      </div>
+      <ul class="tips">
+        {
+          tips.map((t) => (
+            <li class="card tip-card">
+              <span class="tip-icon">
+                <Icon name={t.icon} size={22} />
+              </span>
+              <div>
+                <h3>{t.title}</h3>
+                <p>{t.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container two-col">
+      <div>
+        <span class="eyebrow">Before you go</span>
+        <h2>Questions to ask a business</h2>
+        <p class="muted">
+          Most places are happy to help when they know what you need. Copy these into a text or email, or keep them handy for
+          a quick call.
+        </p>
+      </div>
+      <ul class="questions card">
+        {
+          questions.map((q) => (
+            <li>
+              <Icon name="message" size={20} />
+              <span>{q}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Helpful organizations</span>
+        <h2>Pennsylvania groups worth knowing</h2>
+        <p>
+          These organizations offer free information and support beyond what we cover. Limitless PA isn’t affiliated with
+          them.
+        </p>
+      </div>
+      <ul class="orgs grid grid-2">
+        {
+          orgs.map((o) => (
+            <li class="card org">
+              <h3>{o.name}</h3>
+              <p>{o.text}</p>
+              <a href={o.url} target="_blank" rel="noopener">
+                Visit website <Icon name="external" size={16} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="notice note">
+        <Icon name="shield" size={22} />
+        <p>
+          <strong>Looking for medical or therapy services?</strong> We don’t list those — we’re not medical professionals. Your
+          child’s doctor, your school district, PA 211, and the PEAL Center are good places to start.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .section-head h2,
+  .two-col h2 {
+    color: var(--brand-primary);
+  }
+  .tips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+  .tip-card {
+    display: flex;
+    gap: 14px;
+    padding: 20px;
+    box-shadow: none;
+  }
+  .tip-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+  }
+  .tip-card h3 {
+    margin-bottom: 4px;
+    color: var(--brand-primary);
+  }
+  .tip-card p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .section-alt {
+    background: var(--surface-alt);
+  }
+  .two-col {
+    display: grid;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .two-col {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 56px;
+    }
+  }
+  .muted {
+    color: var(--ink-muted);
+  }
+  .questions {
+    list-style: none;
+    margin: 0;
+    padding: 8px 20px;
+    box-shadow: none;
+  }
+  .questions li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .questions li:last-child {
+    border-bottom: 0;
+  }
+  .questions :global(svg) {
+    flex-shrink: 0;
+    color: var(--brand-green);
+    margin-top: 3px;
+  }
+  .orgs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .org {
+    padding: 22px;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .org h3 {
+    color: var(--brand-primary);
+    margin-bottom: 6px;
+  }
+  .org a {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+  }
+  .note {
+    margin-top: 28px;
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+// Official Limitless PA logo (extracted from design/Branding-limitlesspa.svg).
+// Variants live in public/brand/.
+interface Props {
+  height?: number;
+  variant?: 'header' | 'header-white' | 'horizontal' | 'horizontal-white' | 'stacked' | 'stacked-white' | 'mark' | 'domain';
+  class?: string;
+}
+const ratios: Record<string, number> = {
+  header: 1005.25 / 221,
+  'header-white': 1005.25 / 221,
+  horizontal: 1005.3 / 221,
+  'horizontal-white': 1005.3 / 221,
+  stacked: 732.9 / 450.7,
+  'stacked-white': 732.9 / 450.7,
+  mark: 224 / 221,
+  domain: 1946.2 / 248.4,
+};
+const { height = 44, variant = 'header', class: className } = Astro.props;
+const width = Math.round(height * ratios[variant]);
+---
+
+<img
+  src={`/brand/logo-${variant}.svg`}
+  width={width}
+  height={height}
+  alt="Limitless PA"
+  class={className}
+  decoding="async"
+/>

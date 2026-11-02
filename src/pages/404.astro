@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" noindex>
+  <section class="section">
+    <div class="container nf">
+      <img src="/brand/logo-mark.svg" alt="" width="88" height="87" />
+      <h1>We couldn’t find that page.</h1>
+      <p>It may have moved, or the link might be off by a letter.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/places/">Find places</a>
+        <a class="btn btn-secondary" href="/">Go home</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    max-width: 640px;
+  }
+  .nf img {
+    margin-bottom: 20px;
+  }
+  h1 {
+    color: var(--brand-primary);
+  }
+  p {
+    color: var(--ink-muted);
+    font-size: 1.15rem;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>

@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { categories, regions, accommodations } from '../data/taxonomy';
+---
+
+<Base
+  title="Suggest a place"
+  description="Tell Limitless PA about a sensory-friendly business or venue in Pennsylvania. Families and business owners welcome."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Suggest a place</span>
+      <h1>Know somewhere that gets it?</h1>
+      <p>
+        Tell us about a business that made your family feel welcome — or, if it’s your business, tell us what you offer. We
+        review every suggestion before it’s listed.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container form-wrap">
+      <form
+        class="form card form-card"
+        name="suggest-place"
+        method="POST"
+        action="/thank-you/"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+      >
+        <input type="hidden" name="form-name" value="suggest-place" />
+        <input type="hidden" name="subject" value="New place suggestion — Limitless PA" />
+        <p class="honeypot"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+
+        <fieldset class="field">
+          <legend>I am… <span class="req">*</span></legend>
+          <div class="check-grid">
+            <label class="check"><input type="radio" name="relationship" value="Parent or caregiver" required /> A parent or caregiver</label>
+            <label class="check"><input type="radio" name="relationship" value="Business owner or staff" /> The owner or staff</label>
+            <label class="check"><input type="radio" name="relationship" value="Educator or professional" /> An educator or professional</label>
+            <label class="check"><input type="radio" name="relationship" value="Other" /> Someone else</label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="business">Name of the place <span class="req">*</span></label>
+          <input id="business" name="business" type="text" required />
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="category">Type of place</label>
+            <select id="category" name="category">
+              <option value="">Choose one</option>
+              {categories.map((c) => <option value={c.label}>{c.label}</option>)}
+              <option value="Other">Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="city">Town or city <span class="req">*</span></label>
+            <input id="city" name="city" type="text" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="region">Region</label>
+            <select id="region" name="region">
+              <option value="">Not sure</option>
+              {regions.map((r) => <option value={r}>{r}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="website">Website or social page</label>
+            <input id="website" name="website" type="text" inputmode="url" placeholder="https://" />
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>What do they offer?</legend>
+          <p class="hint">Check anything you know about. It’s okay to leave this blank.</p>
+          <div class="check-grid">
+            {
+              accommodations.map((a) => (
+                <label class="check">
+                  <input type="checkbox" name="accommodations" value={a.id} /> {a.id}
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="story">Tell us about it <span class="req">*</span></label>
+          <p class="hint" id="story-hint">What made it work for your family? Anything other parents should know before going?</p>
+          <textarea id="story" name="story" aria-describedby="story-hint" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="email">Your email <span class="req">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+        </div>
+        <p class="hint small">We’ll only use your email if we have a question about this suggestion. We never share it.</p>
+
+        <button class="btn btn-primary submit" type="submit">Send suggestion</button>
+      </form>
+
+      <aside class="aside">
+        <div class="card tip">
+          <Icon name="info" size={22} />
+          <div>
+            <h2>What happens next</h2>
+            <ol>
+              <li>We read every suggestion.</li>
+              <li>We confirm details with the business.</li>
+              <li>We add it to the guide — usually within a couple of weeks.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="card tip">
+          <Icon name="store" size={22} />
+          <div>
+            <h2>Business owner?</h2>
+            <p>Listing is free. See <a href="/for-businesses/">simple ideas for becoming sensory-friendly</a>.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  if (new URLSearchParams(location.search).get('role') === 'owner') {
+    const r = document.querySelector<HTMLInputElement>('input[name="relationship"][value="Business owner or staff"]');
+    if (r) r.checked = true;
+  }
+</script>

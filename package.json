@@ -1,0 +1,20 @@
+{
+  "name": "limitless-pa",
+  "version": "1.0.0",
+  "description": "Limitless PA — sensory-friendly places, events, and resources for families of special needs children in Pennsylvania",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^5.18.2"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}

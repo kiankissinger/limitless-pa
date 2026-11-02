@@ -1,0 +1,288 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { accommodations } from '../../data/taxonomy';
+import { dateLabel, timeRange, googleCalendarUrl, lastDay } from '../../lib/events';
+
+export async function getStaticPaths() {
+  const events = (await getCollection('events')).filter((e) => !e.data.draft);
+  return events.map((event) => ({ params: { slug: event.id }, props: { event } }));
+}
+
+const { event } = Astro.props;
+const d = event.data;
+const { Content } = await render(event);
+const hasBody = Boolean(event.body?.trim());
+const pageUrl = new URL(`/events/${event.id}/`, Astro.site).toString();
+const time = timeRange(d);
+const gcal = googleCalendarUrl(d, pageUrl);
+const hints = Object.fromEntries(accommodations.map((a) => [a.id, a.hint])) as Record<string, string>;
+const place = [d.location, d.city].filter(Boolean).join(', ');
+const mapUrl = place ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}` : null;
+---
+
+<Base title={d.title} description={d.summary}>
+  <section class="page-hero">
+    <div class="container">
+      <a class="back" href="/events/"><Icon name="back" size={18} /> All events</a>
+      {d.recurring && !d.date && <span class="eyebrow">Recurring program</span>}
+      <h1>{d.title}</h1>
+      {d.host && <p class="host">Hosted by {d.host}</p>}
+      <p class="past-note" hidden data-last-day={lastDay(d) || undefined}>This event has already happened.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container detail">
+      <div class="main">
+        <p class="summary">{d.summary}</p>
+
+        {
+          hasBody && (
+            <div class="prose">
+              <Content />
+            </div>
+          )
+        }
+
+        {
+          d.accommodations.length > 0 && (
+            <>
+              <h2>Accommodations</h2>
+              <ul class="acc-list">
+                {d.accommodations.map((a) => (
+                  <li>
+                    <span class="check">
+                      <Icon name="check" size={18} />
+                    </span>
+                    <div>
+                      <strong>{a}</strong>
+                      {hints[a] && <span>{hints[a]}</span>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+
+        <div class="notice">
+          <Icon name="info" size={22} />
+          <p>
+            Event details come from the host and can change. Please confirm with them before you go. Spot a problem?
+            <a href={`/contact/?about=${encodeURIComponent(d.title)}`}>Let us know</a>.
+          </p>
+        </div>
+      </div>
+
+      <aside class="side card">
+        <dl>
+          <div>
+            <dt><Icon name={d.date ? 'calendar' : 'repeat'} size={18} /> When</dt>
+            <dd>
+              {dateLabel(d, true)}
+              {time && <><br />{time}</>}
+            </dd>
+          </div>
+          {
+            place && (
+              <div>
+                <dt>
+                  <Icon name="pin" size={18} /> Where
+                </dt>
+                <dd>
+                  {place}
+                  {d.location && mapUrl && (
+                    <>
+                      <br />
+                      <a href={mapUrl} target="_blank" rel="noopener">
+                        Open in Maps
+                      </a>
+                    </>
+                  )}
+                </dd>
+              </div>
+            )
+          }
+          {
+            d.cost && (
+              <div>
+                <dt>
+                  <Icon name="dollar" size={18} /> Cost
+                </dt>
+                <dd>{d.cost}</dd>
+              </div>
+            )
+          }
+          {
+            d.ages && (
+              <div>
+                <dt>
+                  <Icon name="child" size={18} /> Ages
+                </dt>
+                <dd>{d.ages}</dd>
+              </div>
+            )
+          }
+          {
+            d.registration && (
+              <div>
+                <dt>
+                  <Icon name="ticket" size={18} /> Registration
+                </dt>
+                <dd>{d.registration}</dd>
+              </div>
+            )
+          }
+        </dl>
+        <div class="actions">
+          {
+            d.url && (
+              <a class="btn btn-primary" href={d.url} target="_blank" rel="noopener">
+                Event details <Icon name="external" size={18} />
+              </a>
+            )
+          }
+          {
+            d.date && (
+              <>
+                <a class="btn btn-secondary" href={gcal} target="_blank" rel="noopener">
+                  <Icon name="calendar" size={18} /> Add to Google Calendar
+                </a>
+                <a class="btn btn-secondary" href={`/events/${event.id}.ics`} download>
+                  <Icon name="calendar" size={18} /> Download .ics
+                </a>
+              </>
+            )
+          }
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+  .page-hero .eyebrow {
+    display: block;
+  }
+  h1 {
+    color: var(--brand-primary);
+  }
+  .host {
+    font-weight: 700;
+    color: var(--brand-green-strong) !important;
+  }
+  .past-note:not([hidden]) {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--brand-accent-soft);
+    color: var(--ink) !important;
+    font-size: 0.95rem !important;
+  }
+  .detail {
+    display: grid;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .detail {
+      grid-template-columns: 1fr 340px;
+      gap: 48px;
+    }
+    .side {
+      position: sticky;
+      top: 96px;
+    }
+  }
+  .summary {
+    font-size: 1.2rem;
+  }
+  .main h2 {
+    font-size: 1.35rem;
+    color: var(--brand-primary);
+    margin-top: 1.4em;
+  }
+  .acc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: grid;
+    gap: 10px;
+  }
+  @media (min-width: 640px) {
+    .acc-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .acc-list li {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .acc-list strong {
+    display: block;
+  }
+  .acc-list span:not(.check) {
+    font-size: 0.92rem;
+    color: var(--ink-muted);
+  }
+  .check {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+  }
+  .notice {
+    margin-top: 24px;
+  }
+  .side {
+    padding: 24px;
+  }
+  dl {
+    margin: 0 0 20px;
+    display: grid;
+    gap: 16px;
+  }
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--brand-primary);
+  }
+  dt :global(svg) {
+    color: var(--brand-green);
+  }
+  dd {
+    margin: 4px 0 0 26px;
+  }
+  .actions {
+    display: grid;
+    gap: 10px;
+  }
+</style>
+
+<script>
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
+  const note = document.querySelector<HTMLElement>('.past-note[data-last-day]');
+  if (note && (note.dataset.lastDay ?? '') < today) note.hidden = false;
+</script>

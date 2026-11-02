@@ -1,0 +1,129 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { categoryById, type CategoryId } from '../data/taxonomy';
+
+interface Props {
+  place: CollectionEntry<'places'>;
+}
+const { place } = Astro.props;
+const d = place.data;
+const cat = categoryById[d.category as CategoryId];
+const where = d.multiLocation ? 'Multiple PA locations' : [d.city, d.region].filter(Boolean).join(' · ');
+const searchText = [d.name, d.city, d.region, d.summary, cat?.label, ...d.accommodations].join(' ').toLowerCase();
+---
+
+<article
+  class="place card"
+  data-place
+  data-category={d.category}
+  data-region={d.region}
+  data-accommodations={JSON.stringify(d.accommodations)}
+  data-search={searchText}
+>
+  <div class="cat">
+    <span class="cat-icon"><Icon name={cat.icon as any} size={18} /></span>
+    {cat.label}
+  </div>
+  <h3><a href={`/places/${place.id}/`}>{d.name}</a></h3>
+  <p class="where"><Icon name="pin" size={16} /> {where}</p>
+  <p class="summary">{d.summary}</p>
+  {
+    d.accommodations.length > 0 && (
+      <ul class="tag-list" aria-label="Accommodations">
+        {d.accommodations.slice(0, 4).map((a) => (
+          <li class="tag">{a}</li>
+        ))}
+        {d.accommodations.length > 4 && <li class="tag more">+{d.accommodations.length - 4} more</li>}
+      </ul>
+    )
+  }
+  <a class="more-link" href={`/places/${place.id}/`} aria-hidden="true" tabindex="-1">
+    See details <Icon name="arrow" size={16} />
+  </a>
+</article>
+
+<style>
+  .place {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .place:hover {
+    box-shadow: var(--shadow-lift);
+  }
+  .place:focus-within {
+    box-shadow: var(--shadow-lift);
+  }
+  .cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--brand-green-strong);
+  }
+  .cat-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  h3 a {
+    color: var(--brand-primary);
+    text-decoration: none;
+  }
+  /* Whole card is clickable via the heading link */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+  h3 a:focus-visible {
+    outline: none;
+  }
+  h3 a:focus-visible::after {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .where {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+  }
+  .where :global(svg) {
+    flex-shrink: 0;
+  }
+  .summary {
+    margin: 0;
+  }
+  .tag.more {
+    background: var(--surface-alt);
+    color: var(--ink-muted);
+  }
+  .more-link {
+    margin-top: auto;
+    padding-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+</style>

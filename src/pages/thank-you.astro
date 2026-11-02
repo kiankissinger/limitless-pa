@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Thank you" noindex>
+  <section class="section">
+    <div class="container thanks">
+      <span class="badge"><Icon name="check" size={36} /></span>
+      <h1>Thank you!</h1>
+      <p>We got it. A real person will read your note, and we’ll reach out if we have any questions.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/places/">Browse places</a>
+        <a class="btn btn-secondary" href="/">Back to home</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .thanks {
+    text-align: center;
+    max-width: 640px;
+    display: grid;
+    justify-items: center;
+  }
+  .badge {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: var(--brand-green);
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  h1 {
+    color: var(--brand-primary);
+  }
+  p {
+    font-size: 1.15rem;
+    color: var(--ink-muted);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+</style>

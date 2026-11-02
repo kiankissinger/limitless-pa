@@ -1,0 +1,374 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PlaceCard from '../../components/PlaceCard.astro';
+import { categories, regions, accommodations } from '../../data/taxonomy';
+
+const places = (await getCollection('places'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name));
+
+// Only offer accommodation filters that at least one listing uses
+const used = new Set(places.flatMap((p) => p.data.accommodations));
+const accFilters = accommodations.filter((a) => used.has(a.id));
+---
+
+<Base
+  title="Find sensory-friendly places"
+  description="Browse sensory-friendly and autism-friendly businesses, attractions, and activities across Pennsylvania."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Directory</span>
+      <h1>Find sensory-friendly places</h1>
+      <p>
+        Businesses and venues across Pennsylvania that have made real accommodations for kids with sensory needs. Filter by
+        what matters to your family.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container layout">
+      <aside class="filters card" aria-labelledby="filters-title">
+        <form id="place-filters" role="search">
+          <div class="filters-head">
+            <h2 id="filters-title"><Icon name="sliders" size={20} /> Filter</h2>
+            <button type="reset" class="clear">Clear all</button>
+          </div>
+
+          <div class="field">
+            <label for="f-q">Search</label>
+            <input id="f-q" name="q" type="search" placeholder="Name, town, or keyword" autocomplete="off" />
+          </div>
+
+          <button type="button" class="more-toggle" aria-expanded="true" aria-controls="more-filters">
+            <Icon name="sliders" size={18} /> <span>More filters</span> <span class="active-count"></span>
+          </button>
+
+          <div class="more" id="more-filters">
+          <div class="field">
+            <label for="f-category">Type of place</label>
+            <select id="f-category" name="category">
+              <option value="">All types</option>
+              {categories.map((c) => <option value={c.id}>{c.label}</option>)}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="f-region">Region</label>
+            <select id="f-region" name="region">
+              <option value="">All of Pennsylvania</option>
+              {regions.filter((r) => r !== 'Statewide').map((r) => <option value={r}>{r}</option>)}
+            </select>
+            <p class="hint">Statewide programs always show.</p>
+          </div>
+
+          {
+            accFilters.length > 0 && (
+              <fieldset class="field">
+                <legend>Must have</legend>
+                <div class="acc-list">
+                  {accFilters.map((a) => (
+                    <label class="acc" title={a.hint}>
+                      <input type="checkbox" name="acc" value={a.id} />
+                      <span>{a.id}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )
+          }
+          </div>
+        </form>
+      </aside>
+
+      <div class="results">
+        <p class="count" id="result-count" aria-live="polite">
+          Showing {places.length} {places.length === 1 ? 'place' : 'places'}
+        </p>
+
+        <div class="grid grid-2" id="place-list">
+          {places.map((p) => <PlaceCard place={p} />)}
+        </div>
+
+        <div class="no-results card" id="no-results" hidden>
+          <Icon name="search" size={28} />
+          <h2>No matches yet</h2>
+          <p>
+            Try removing a filter — or help us grow the list. If you know a place that fits, we’d love to hear about it.
+          </p>
+          <div class="no-results-actions">
+            <button type="button" class="btn btn-secondary" id="clear-2">Clear filters</button>
+            <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
+          </div>
+        </div>
+
+        <div class="suggest-band">
+          <p><strong>Missing a place you love?</strong> Families are our best source.</p>
+          <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 300px 1fr;
+    }
+    .filters {
+      position: sticky;
+      top: 96px;
+      max-height: calc(100vh - 116px);
+      overflow: auto;
+    }
+  }
+  .filters {
+    padding: 20px;
+    box-shadow: none;
+  }
+  .filters form,
+  .more {
+    display: grid;
+    gap: 18px;
+  }
+  .more-toggle {
+    display: none;
+  }
+  @media (max-width: 959px) {
+    .more-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--brand-primary);
+      background: var(--surface);
+      color: var(--brand-primary);
+      font: inherit;
+      font-family: var(--font-display);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .more-toggle[aria-expanded='true'] {
+      background: var(--brand-primary-soft);
+    }
+    .filters.collapsed .more {
+      display: none;
+    }
+  }
+  .active-count:empty {
+    display: none;
+  }
+  .active-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--brand-primary);
+    color: #fff;
+    font-size: 0.8rem;
+  }
+  .filters-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filters h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--brand-primary);
+  }
+  .clear {
+    background: none;
+    border: 0;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--brand-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 6px;
+  }
+  .acc-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .acc {
+    position: relative;
+    cursor: pointer;
+    font-weight: 400;
+  }
+  .acc input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+  .acc span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    font-size: 0.92rem;
+  }
+  .acc input:checked + span {
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #fff;
+  }
+  .acc input:checked + span::before {
+    content: '✓';
+    margin-right: 6px;
+  }
+  .acc input:focus-visible + span {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .count {
+    font-family: var(--font-display);
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+  .no-results {
+    text-align: center;
+    padding: 36px 24px;
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+  }
+  .no-results :global(svg) {
+    color: var(--brand-green);
+  }
+  .no-results h2 {
+    font-size: 1.3rem;
+    margin: 6px 0 0;
+  }
+  .no-results p {
+    max-width: 46ch;
+    color: var(--ink-muted);
+  }
+  .no-results-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .suggest-band {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    background: var(--brand-green-soft);
+  }
+  .suggest-band p {
+    margin: 0;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('place-filters') as HTMLFormElement | null;
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-place]'));
+  const count = document.getElementById('result-count');
+  const empty = document.getElementById('no-results');
+  const clear2 = document.getElementById('clear-2');
+
+  if (form) {
+    const q = form.elements.namedItem('q') as HTMLInputElement;
+    const category = form.elements.namedItem('category') as HTMLSelectElement;
+    const region = form.elements.namedItem('region') as HTMLSelectElement;
+    const accBoxes = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="acc"]'));
+
+    // Restore state from the URL (?q=&category=&region=&acc=)
+    const params = new URLSearchParams(location.search);
+    q.value = params.get('q') ?? '';
+    category.value = params.get('category') ?? '';
+    region.value = params.get('region') ?? '';
+    const accParams = params.getAll('acc');
+    accBoxes.forEach((b) => (b.checked = accParams.includes(b.value)));
+
+    const apply = () => {
+      const terms = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const cat = category.value;
+      const reg = region.value;
+      const accs = accBoxes.filter((b) => b.checked).map((b) => b.value);
+      let shown = 0;
+
+      for (const card of cards) {
+        const text = card.dataset.search ?? '';
+        const cardAcc: string[] = JSON.parse(card.dataset.accommodations ?? '[]');
+        const ok =
+          terms.every((t) => text.includes(t)) &&
+          (!cat || card.dataset.category === cat) &&
+          (!reg || card.dataset.region === reg || card.dataset.region === 'Statewide') &&
+          accs.every((a) => cardAcc.includes(a));
+        card.hidden = !ok;
+        if (ok) shown++;
+      }
+
+      if (count) count.textContent = `Showing ${shown} ${shown === 1 ? 'place' : 'places'}`;
+      if (empty) empty.hidden = shown !== 0;
+
+      const next = new URLSearchParams();
+      if (q.value.trim()) next.set('q', q.value.trim());
+      if (cat) next.set('category', cat);
+      if (reg) next.set('region', reg);
+      accs.forEach((a) => next.append('acc', a));
+      const qs = next.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    };
+
+    // On small screens, tuck the extra filters behind a toggle
+    const panel = form.closest('.filters');
+    const toggle = form.querySelector<HTMLButtonElement>('.more-toggle');
+    const activeCount = form.querySelector<HTMLElement>('.active-count');
+    const updateCount = () => {
+      const n = (category.value ? 1 : 0) + (region.value ? 1 : 0) + accBoxes.filter((b) => b.checked).length;
+      if (activeCount) activeCount.textContent = n ? String(n) : '';
+    };
+    const setOpen = (open: boolean) => {
+      panel?.classList.toggle('collapsed', !open);
+      toggle?.setAttribute('aria-expanded', String(open));
+    };
+    if (matchMedia('(max-width: 959px)').matches) setOpen(false);
+    toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    form.addEventListener('change', updateCount);
+    form.addEventListener('reset', () => setTimeout(updateCount, 0));
+    updateCount();
+
+    form.addEventListener('input', apply);
+    form.addEventListener('change', apply);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    form.addEventListener('reset', () => setTimeout(apply, 0));
+    clear2?.addEventListener('click', () => form.reset());
+    apply();
+  }
+</script>
+
+<style is:global>
+  [data-place][hidden] {
+    display: none !important;
+  }
+</style>

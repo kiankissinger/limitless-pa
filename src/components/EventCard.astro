@@ -1,0 +1,141 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { dateLabel, timeRange, lastDay } from '../lib/events';
+
+interface Props {
+  event: CollectionEntry<'events'>;
+}
+const { event } = Astro.props;
+const d = event.data;
+const day = d.date ? d.date.getUTCDate() : null;
+const mon = d.date ? d.date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }) : null;
+const time = timeRange(d);
+---
+
+<article class="event card" data-event data-last-day={lastDay(d) || undefined}>
+  {
+    d.date ? (
+      <div class="date-badge" aria-hidden="true">
+        <span class="mon">{mon}</span>
+        <span class="day">{day}</span>
+      </div>
+    ) : (
+      <div class="date-badge recurring" aria-hidden="true">
+        <Icon name="repeat" size={26} />
+      </div>
+    )
+  }
+  <div class="body">
+    <h3><a href={`/events/${event.id}/`}>{d.title}</a></h3>
+    <ul class="meta">
+      <li>
+        <Icon name={d.date ? 'calendar' : 'repeat'} size={16} />
+        <span>{dateLabel(d)}{time && ` · ${time}`}</span>
+      </li>
+      {
+        (d.location || d.city) && (
+          <li>
+            <Icon name="pin" size={16} />
+            <span>{[d.location, d.city].filter(Boolean).join(', ')}</span>
+          </li>
+        )
+      }
+      {
+        d.cost && (
+          <li>
+            <Icon name="dollar" size={16} />
+            <span>{d.cost}</span>
+          </li>
+        )
+      }
+    </ul>
+    <p class="summary">{d.summary}</p>
+  </div>
+</article>
+
+<style>
+  .event {
+    position: relative;
+    display: flex;
+    gap: 18px;
+    padding: 20px;
+    align-items: flex-start;
+  }
+  .event:hover,
+  .event:focus-within {
+    box-shadow: var(--shadow-lift);
+  }
+  .date-badge {
+    flex-shrink: 0;
+    width: 64px;
+    height: 70px;
+    border-radius: 14px;
+    background: var(--brand-primary);
+    color: #fff;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    font-family: var(--font-display);
+    line-height: 1.05;
+  }
+  .date-badge .mon {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #cfe0c2;
+  }
+  .date-badge .day {
+    font-size: 1.7rem;
+    font-weight: 600;
+  }
+  .date-badge.recurring {
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+  }
+  .body {
+    min-width: 0;
+  }
+  h3 {
+    margin: 0 0 8px;
+    font-size: 1.15rem;
+  }
+  h3 a {
+    color: var(--brand-primary);
+    text-decoration: none;
+  }
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+  h3 a:focus-visible {
+    outline: none;
+  }
+  h3 a:focus-visible::after {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    display: grid;
+    gap: 4px;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+  }
+  .meta li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .meta :global(svg) {
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .summary {
+    margin: 0;
+  }
+</style>

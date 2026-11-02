@@ -1,0 +1,226 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+const ideas = [
+  { icon: 'clock', title: 'Offer a quiet hour', text: 'Pick a slow time each week or month. Lower the lights, turn the music off, and skip the announcements.' },
+  { icon: 'calendar', title: 'Let families book ahead', text: 'Offer the first or last appointment of the day, when it’s calm and nobody is waiting.' },
+  { icon: 'headphones', title: 'Keep a small comfort kit', text: 'A couple of pairs of noise-reducing headphones and some fidgets go a long way.' },
+  { icon: 'sparkle', title: 'Show what to expect', text: 'Post a few photos of your entrance, waiting area, and process online so kids can preview the visit.' },
+  { icon: 'heart', title: 'Brief your team', text: 'Be patient, give extra time, explain before touching, and don’t take a meltdown personally. That’s most of it.' },
+  { icon: 'people', title: 'Make a calm corner', text: 'Even a chair away from the noise gives a kid somewhere to reset before trying again.' },
+] as const;
+---
+
+<Base
+  title="For businesses"
+  description="Get your Pennsylvania business listed with Limitless PA, and find simple, low-cost ways to welcome kids with sensory needs."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">For businesses</span>
+      <h1>Welcome every kid — and every family who comes with them.</h1>
+      <p>
+        Families of kids with special needs are loyal customers when they find a place that works. Listing with Limitless PA
+        is free, and becoming sensory-friendly is easier than you might think.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="why">
+        <div class="stat card">
+          <span class="num">1 in 31</span>
+          <p>
+            U.S. children are identified with autism, according to the
+            <a href="https://www.cdc.gov/autism/data-research/index.html" target="_blank" rel="noopener">CDC</a>. Many more kids
+            have sensory sensitivities. Their families are in your community right now.
+          </p>
+        </div>
+        <div class="prose">
+          <h2>Why it matters</h2>
+          <p>
+            For many families, everyday errands take a lot of planning. When a parent isn’t sure a place will be patient with
+            their child, they often just don’t go. A few small changes — and letting families know about them — can turn
+            your business into the place they come back to again and again.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Simple ideas</span>
+        <h2>Small changes, mostly free</h2>
+        <p>You don’t need to do all of these. Pick one or two that fit your business and start there.</p>
+      </div>
+      <ul class="ideas">
+        {
+          ideas.map((i) => (
+            <li class="card idea">
+              <span class="idea-icon">
+                <Icon name={i.icon} size={24} />
+              </span>
+              <h3>{i.title}</h3>
+              <p>{i.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container steps-wrap">
+      <div>
+        <span class="eyebrow">Getting listed</span>
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><span>1</span><div><strong>Tell us what you offer.</strong> Fill out a short form about your business and accommodations.</div></li>
+          <li><span>2</span><div><strong>We follow up.</strong> We’ll confirm the details with you, and can share ideas if you’re just getting started.</div></li>
+          <li><span>3</span><div><strong>You’re listed — free.</strong> Families can find you by town, type of business, and the accommodations you offer.</div></li>
+          <li><span>4</span><div><strong>Share your events.</strong> Hosting a sensory-friendly hour or special event? We’ll help spread the word.</div></li>
+        </ol>
+      </div>
+      <div class="card cta">
+        <h2>Ready to be listed?</h2>
+        <p>It takes about five minutes.</p>
+        <a class="btn btn-primary" href="/suggest/?role=owner">List my business</a>
+        <a class="btn btn-secondary" href="/submit-event/">Share an event</a>
+        <p class="small">Questions first? <a href="/contact/">Contact us</a>.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .why {
+    display: grid;
+    gap: 32px;
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .why {
+      grid-template-columns: 360px 1fr;
+      gap: 56px;
+    }
+  }
+  .stat {
+    padding: 28px;
+    background: var(--brand-primary);
+    color: #dbe7ea;
+    border: 0;
+  }
+  .stat .num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .stat a {
+    color: #fff;
+  }
+  .stat p {
+    margin: 0;
+  }
+  .prose h2 {
+    color: var(--brand-primary);
+    margin-top: 0;
+  }
+  .section-alt {
+    background: var(--surface-alt);
+  }
+  .section-head h2 {
+    color: var(--brand-primary);
+  }
+  .ideas {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  }
+  .idea {
+    padding: 22px;
+    box-shadow: none;
+  }
+  .idea-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+    margin-bottom: 12px;
+  }
+  .idea h3 {
+    color: var(--brand-primary);
+    margin-bottom: 6px;
+  }
+  .idea p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .steps-wrap {
+    display: grid;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .steps-wrap {
+      grid-template-columns: 1fr 360px;
+      gap: 64px;
+    }
+  }
+  .steps-wrap h2 {
+    color: var(--brand-primary);
+  }
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 18px;
+  }
+  .steps li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .steps span {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand-green-strong);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  .cta {
+    padding: 28px;
+    display: grid;
+    gap: 12px;
+    background: var(--brand-primary-soft);
+    border: 0;
+    box-shadow: none;
+  }
+  .cta h2,
+  .cta p {
+    margin: 0;
+  }
+  .small {
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+  }
+</style>

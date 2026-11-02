@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { regions, accommodations } from '../data/taxonomy';
+---
+
+<Base
+  title="Share an event"
+  description="Submit a sensory-friendly or inclusive event for families of kids with special needs in Pennsylvania."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Share an event</span>
+      <h1>Tell families what’s happening</h1>
+      <p>
+        Sensory-friendly hours, adaptive sports, inclusive story times, meetups — if families of kids with special needs would
+        feel welcome, we’d love to post it. It’s free.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container form-wrap">
+      <form
+        class="form card form-card"
+        name="submit-event"
+        method="POST"
+        action="/thank-you/"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+      >
+        <input type="hidden" name="form-name" value="submit-event" />
+        <input type="hidden" name="subject" value="New event submission — Limitless PA" />
+        <p class="honeypot"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+
+        <div class="field">
+          <label for="title">Event name <span class="req">*</span></label>
+          <input id="title" name="title" type="text" required />
+        </div>
+
+        <div class="field">
+          <label for="host">Who’s hosting?</label>
+          <input id="host" name="host" type="text" />
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="date">Date <span class="req">*</span></label>
+            <input id="date" name="date" type="date" required />
+          </div>
+          <div class="field">
+            <label for="recurring">Does it repeat?</label>
+            <input id="recurring" name="recurring" type="text" placeholder="e.g. Every 2nd Saturday" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="start-time">Start time</label>
+            <input id="start-time" name="start_time" type="time" />
+          </div>
+          <div class="field">
+            <label for="end-time">End time</label>
+            <input id="end-time" name="end_time" type="time" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="location">Location / address <span class="req">*</span></label>
+            <input id="location" name="location" type="text" required />
+          </div>
+          <div class="field">
+            <label for="region">Region</label>
+            <select id="region" name="region">
+              <option value="">Not sure</option>
+              {regions.map((r) => <option value={r}>{r}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="cost">Cost</label>
+            <input id="cost" name="cost" type="text" placeholder="Free, $5 per child, etc." />
+          </div>
+          <div class="field">
+            <label for="ages">Ages</label>
+            <input id="ages" name="ages" type="text" placeholder="All ages, 5–12, etc." />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="url">Link for more info or registration</label>
+          <input id="url" name="url" type="text" inputmode="url" placeholder="https://" />
+        </div>
+
+        <fieldset class="field">
+          <legend>Accommodations at this event</legend>
+          <div class="check-grid">
+            {
+              accommodations.map((a) => (
+                <label class="check">
+                  <input type="checkbox" name="accommodations" value={a.id} /> {a.id}
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="description">Describe the event <span class="req">*</span></label>
+          <textarea id="description" name="description" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="email">Your email <span class="req">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+        </div>
+        <p class="hint small">We’ll only use your email if we have a question about this event. We never share it.</p>
+
+        <button class="btn btn-primary submit" type="submit">Submit event</button>
+      </form>
+
+      <aside class="aside">
+        <div class="card tip">
+          <Icon name="calendar" size={22} />
+          <div>
+            <h2>A few guidelines</h2>
+            <ul>
+              <li>Events should welcome kids with special needs and their families.</li>
+              <li>We don’t post medical, clinical, or therapy services.</li>
+              <li>Please submit at least a week ahead so we can get it posted.</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,137 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site, nav } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="about">
+        <Logo variant="header-white" height={52} />
+        <p>
+          A free, community-built guide to the places, events, and people across Pennsylvania that make room for every
+          kid.
+        </p>
+      </div>
+
+      <nav aria-label="Footer">
+        <h2>Explore</h2>
+        <ul>
+          {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div>
+        <h2>Get involved</h2>
+        <ul>
+          <li><a href="/suggest/">Suggest a place</a></li>
+          <li><a href="/submit-event/">Share an event</a></li>
+          <li><a href="/for-businesses/">Get your business listed</a></li>
+          <li><a href="/contact/">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <Icon name="info" size={22} />
+      <p>
+        <strong>We are not medical providers.</strong> Limitless PA shares community-sourced information about places, events,
+        and everyday resources. Nothing on this site is medical, therapeutic, or legal advice. Accommodations can change, so
+        please contact a business before you visit. In an emergency, call <a href="tel:911">911</a>. For mental health crisis
+        support, call or text <a href="tel:988">988</a>.
+      </p>
+    </div>
+
+    <div class="bottom">
+      <p>&copy; {year} {site.name}. {site.tagline}</p>
+      <p><a href="/privacy/">Privacy</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--brand-primary);
+    color: #dbe7ea;
+    padding-block: 56px 28px;
+    margin-top: 0;
+  }
+  .site-footer a {
+    color: #fff;
+  }
+  .site-footer a:hover {
+    color: #cfe0c2;
+  }
+  .top {
+    display: grid;
+    gap: 36px;
+  }
+  @media (min-width: 800px) {
+    .top {
+      grid-template-columns: 1.6fr 1fr 1fr;
+    }
+  }
+  .about :global(img) {
+    height: 52px;
+    width: auto;
+    margin-bottom: 16px;
+  }
+  .about p {
+    max-width: 40ch;
+  }
+  h2 {
+    font-size: 1rem;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  ul a {
+    text-decoration: none;
+  }
+  ul a:hover {
+    text-decoration: underline;
+  }
+  .disclaimer {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 40px;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 7%);
+    border: 1px solid rgb(255 255 255 / 14%);
+    font-size: 0.95rem;
+  }
+  .disclaimer :global(svg) {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #b9cfa8;
+  }
+  .disclaimer p {
+    margin: 0;
+  }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 255 255 / 14%);
+    font-size: 0.9rem;
+    color: #b6c9ce;
+  }
+  .bottom p {
+    margin: 0;
+  }
+</style>

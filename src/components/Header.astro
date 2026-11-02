@@ -1,0 +1,184 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label="Limitless PA home">
+      <Logo height={46} />
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="when-closed"><Icon name="menu" size={24} /></span>
+      <span class="when-open"><Icon name="close" size={24} /></span>
+      <span class="menu-label">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Main">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a href="/suggest/" class="btn btn-primary nav-cta">
+        <Icon name="plus" size={18} /> Suggest a place
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 76px;
+  }
+  .brand {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  .brand :global(img) {
+    height: 42px;
+    width: auto;
+  }
+
+  .menu-toggle {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--brand-primary);
+    background: var(--brand-primary-soft);
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 16px 10px 12px;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .menu-toggle .when-open {
+    display: none;
+  }
+  .menu-toggle[aria-expanded='true'] .when-open {
+    display: inline-flex;
+  }
+  .menu-toggle[aria-expanded='true'] .when-closed {
+    display: none;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .nav ul {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav ul a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.98rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav ul a:hover {
+    background: var(--brand-primary-soft);
+    color: var(--brand-primary);
+  }
+  .nav ul a[aria-current='page'] {
+    color: var(--brand-primary);
+    background: var(--brand-green-soft);
+  }
+  .nav-cta {
+    min-height: 44px;
+    padding-block: 0.55em;
+  }
+
+  @media (max-width: 1040px) {
+    .menu-toggle {
+      display: inline-flex;
+    }
+    .nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      box-shadow: var(--shadow-lift);
+      flex-direction: column;
+      align-items: stretch;
+      padding: 12px var(--gutter) 20px;
+      gap: 12px;
+    }
+    .nav.open {
+      display: flex;
+    }
+    .nav ul {
+      flex-direction: column;
+    }
+    .nav ul a {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+    }
+  }
+  @media (max-width: 400px) {
+    .brand :global(img) {
+      height: 36px;
+    }
+    .menu-label {
+      display: none;
+    }
+    .menu-toggle {
+      padding: 10px;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('open', open);
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

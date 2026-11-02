@@ -1,0 +1,565 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PlaceCard from '../components/PlaceCard.astro';
+import EventCard from '../components/EventCard.astro';
+import { categories } from '../data/taxonomy';
+import { splitEvents } from '../lib/events';
+
+const places = (await getCollection('places')).filter((p) => !p.data.draft);
+const events = await getCollection('events');
+const { upcoming, recurring } = splitEvents(events);
+
+const featured = [...places.filter((p) => p.data.featured), ...places.filter((p) => !p.data.featured)].slice(0, 6);
+const eventPreview = [...upcoming, ...recurring].slice(0, 4);
+const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter((p) => p.data.category === c.id).length]));
+
+const lookFor = [
+  { icon: 'headphones', title: 'Calmer spaces', text: 'A quiet room, a corner away from the music, or headphones to borrow.' },
+  { icon: 'clock', title: 'Sensory-friendly times', text: 'Hours with lights down, sound low, and fewer people around.' },
+  { icon: 'heart', title: 'Patient, trained staff', text: 'People who know that a meltdown isn’t misbehavior — and don’t rush you.' },
+  { icon: 'calendar', title: 'Ways to plan ahead', text: 'Photos, social stories, or a walkthrough so nothing is a surprise.' },
+  { icon: 'sparkle', title: 'Flexible routines', text: 'First appointment of the day, extra time, breaks whenever you need them.' },
+  { icon: 'people', title: 'Room to be yourself', text: 'Kids can move, stim, flap, and make noise — no side-eye.' },
+] as const;
+---
+
+<Base>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Pennsylvania · For families of kids with special needs</span>
+        <h1>Find the places where your kid can just be a kid.</h1>
+        <p class="lead">
+          Limitless PA is a free guide to sensory-friendly businesses, inclusive events, and welcoming spaces across
+          Pennsylvania — from a barbershop with a quiet room to a movie with the lights up.
+        </p>
+
+        <form class="hero-search" action="/places/" method="get" role="search">
+          <label for="hero-q" class="visually-hidden">Search places</label>
+          <Icon name="search" size={22} />
+          <input id="hero-q" name="q" type="search" placeholder="Haircuts, movies, quiet room…" />
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+
+        <div class="hero-links">
+          <a href="/places/">Browse all places <Icon name="arrow" size={16} /></a>
+          <a href="/events/">See upcoming events <Icon name="arrow" size={16} /></a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-card main">
+          <div class="art-head">
+            <span class="art-icon"><Icon name="scissors" size={22} /></span>
+            <div>
+              <strong>Your neighborhood barbershop</strong>
+              <span>Haircuts &amp; grooming</span>
+            </div>
+          </div>
+          <ul>
+            <li><Icon name="check" size={18} /> Quiet room in the back</li>
+            <li><Icon name="check" size={18} /> First appointment of the day</li>
+            <li><Icon name="check" size={18} /> Clippers off — scissors only</li>
+            <li><Icon name="check" size={18} /> No rush, breaks anytime</li>
+          </ul>
+        </div>
+        <div class="art-chip c1"><Icon name="film" size={18} /> Lights up, sound down</div>
+        <div class="art-chip c2"><Icon name="headphones" size={18} /> Headphones to borrow</div>
+        <div class="art-chip c3"><Icon name="clock" size={18} /> Sensory hours</div>
+        <img class="art-mark" src="/brand/logo-mark.svg" alt="" width="96" height="95" />
+      </div>
+    </div>
+  </section>
+
+  <!-- NOT MEDICAL STRIP -->
+  <section class="strip">
+    <div class="container strip-inner">
+      <Icon name="shield" size={26} />
+      <p>
+        <strong>Everything that isn’t a doctor’s office.</strong> We’re a community group, not medical professionals. We focus on
+        the rest of life — haircuts, birthdays, movie nights, and Saturday mornings out.
+      </p>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Browse by what you need</span>
+        <h2>Where do you want to go?</h2>
+      </div>
+      <ul class="cat-grid">
+        {
+          categories.map((c) => (
+            <li>
+              <a href={`/places/?category=${c.id}`} class="cat-tile">
+                <span class="cat-icon">
+                  <Icon name={c.icon as any} size={24} />
+                </span>
+                <span class="cat-text">
+                  <strong>{c.label}</strong>
+                  <span>{countByCat[c.id] ? `${countByCat[c.id]} listed` : 'Help us add some'}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- FEATURED PLACES -->
+  {
+    featured.length > 0 && (
+      <section class="section section-alt">
+        <div class="container">
+          <div class="head-row">
+            <div class="section-head">
+              <span class="eyebrow">Sensory-friendly places</span>
+              <h2>Places making room for every kid</h2>
+            </div>
+            <a class="btn btn-secondary" href="/places/">
+              See all places
+            </a>
+          </div>
+          <div class="grid grid-3">
+            {featured.map((p) => (
+              <PlaceCard place={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- WHAT WE LOOK FOR -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">What we look for</span>
+        <h2>Small changes that make a big difference</h2>
+        <p>
+          A business doesn’t need to be perfect to be listed. We look for real, practical accommodations that make an outing
+          easier for kids with sensory needs — and for the grown-ups with them.
+        </p>
+      </div>
+      <ul class="look-grid">
+        {
+          lookFor.map((l) => (
+            <li class="look card">
+              <span class="look-icon">
+                <Icon name={l.icon} size={24} />
+              </span>
+              <h3>{l.title}</h3>
+              <p>{l.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="head-row">
+        <div class="section-head">
+          <span class="eyebrow">Things to do</span>
+          <h2>Upcoming &amp; recurring events</h2>
+        </div>
+        <a class="btn btn-secondary" href="/events/">All events</a>
+      </div>
+      {
+        eventPreview.length > 0 ? (
+          <div class="grid grid-2">
+            {eventPreview.map((e) => (
+              <EventCard event={e} />
+            ))}
+          </div>
+        ) : (
+          <div class="empty card">
+            <p>
+              We’re gathering events now. Hosting something inclusive? <a href="/submit-event/">Share your event</a>.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- CTAs -->
+  <section class="section">
+    <div class="container grid grid-2">
+      <div class="cta card">
+        <span class="cta-icon"><Icon name="heart" size={28} /></span>
+        <h2>Know a great place?</h2>
+        <p>
+          The best recommendations come from families. If a business made your kid feel welcome, tell us about it — we’ll
+          check it out and add it to the guide.
+        </p>
+        <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
+      </div>
+      <div class="cta card cta-green">
+        <span class="cta-icon"><Icon name="store" size={28} /></span>
+        <h2>Own a business?</h2>
+        <p>
+          Whether you already offer sensory-friendly options or want to start, we’d love to hear from you. Listing is free,
+          and we can share simple ideas that cost little or nothing.
+        </p>
+        <a class="btn btn-green" href="/for-businesses/">For businesses</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    background:
+      radial-gradient(1200px 500px at 85% -10%, var(--brand-green-soft), transparent 60%),
+      linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+    padding-block: clamp(40px, 7vw, 88px);
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  .hero h1 {
+    color: var(--brand-primary);
+    max-width: 16ch;
+  }
+  .lead {
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    color: var(--ink-muted);
+    max-width: 54ch;
+  }
+  .hero-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 6px 6px 18px;
+    box-shadow: var(--shadow);
+    max-width: 560px;
+    margin-top: 28px;
+  }
+  .hero-search:focus-within {
+    border-color: var(--brand-primary);
+    outline: 3px solid color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  }
+  .hero-search > :global(svg) {
+    color: var(--ink-muted);
+    flex-shrink: 0;
+  }
+  .hero-search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 1.05rem;
+    color: var(--ink);
+    padding: 10px 0;
+  }
+  .hero-search input:focus {
+    outline: none;
+  }
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin-top: 20px;
+  }
+  .hero-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+  }
+
+  .hero-art {
+    position: relative;
+    max-width: 460px;
+    width: 100%;
+    margin-inline: auto;
+    padding: 44px 0 64px;
+  }
+  .art-card {
+    position: relative;
+    margin-inline: 6%;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lift);
+    padding: 24px;
+  }
+  .art-head {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .art-head strong {
+    display: block;
+    font-family: var(--font-display);
+    color: var(--brand-primary);
+    font-size: 1.08rem;
+  }
+  .art-head span {
+    font-size: 0.9rem;
+    color: var(--brand-green-strong);
+    font-weight: 700;
+  }
+  .art-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+    flex-shrink: 0;
+  }
+  .art-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .art-card li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 10px;
+  }
+  .art-card li :global(svg) {
+    color: var(--brand-green);
+    flex-shrink: 0;
+  }
+  .art-chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand-primary);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    padding: 9px 14px;
+    border-radius: 999px;
+    box-shadow: var(--shadow-lift);
+    white-space: nowrap;
+  }
+  .art-chip :global(svg) {
+    color: #cfe0c2;
+  }
+  .c1 {
+    top: 0;
+    right: 0;
+  }
+  .c2 {
+    bottom: 8px;
+    left: 0;
+    background: var(--brand-green-strong);
+  }
+  .c2 :global(svg) {
+    color: #fff;
+  }
+  .c3 {
+    bottom: 8px;
+    right: 0;
+    background: #fff;
+    color: var(--brand-primary);
+    border: 1px solid var(--line);
+  }
+  .c3 :global(svg) {
+    color: var(--brand-green);
+  }
+  .art-mark {
+    position: absolute;
+    top: 10px;
+    left: -6px;
+    z-index: 1;
+    width: 64px;
+    height: auto;
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 6px 14px rgb(17 64 78 / 18%));
+  }
+  @media (max-width: 600px) {
+    .hero-art {
+      display: none;
+    }
+  }
+
+  /* Strip */
+  .strip {
+    background: var(--brand-primary);
+    color: #e3edf0;
+  }
+  .strip-inner {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding-block: 22px;
+  }
+  .strip-inner :global(svg) {
+    flex-shrink: 0;
+    color: #b9cfa8;
+  }
+  .strip p {
+    margin: 0;
+  }
+  .strip strong {
+    color: #fff;
+  }
+
+  /* Categories */
+  .cat-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  }
+  .cat-tile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--ink);
+    height: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cat-tile:hover {
+    border-color: var(--brand-green);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+  }
+  .cat-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--brand-primary-soft);
+    color: var(--brand-primary);
+    flex-shrink: 0;
+  }
+  .cat-text strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .cat-text span {
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+  }
+
+  .section-alt {
+    background: var(--surface-alt);
+  }
+  .head-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .head-row .section-head {
+    margin-bottom: 0;
+  }
+
+  /* Look for */
+  .look-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  }
+  .look {
+    padding: 22px;
+    box-shadow: none;
+  }
+  .look-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--brand-green-soft);
+    color: var(--brand-green-strong);
+    margin-bottom: 12px;
+  }
+  .look h3 {
+    margin-bottom: 6px;
+    color: var(--brand-primary);
+  }
+  .look p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+
+  .empty {
+    padding: 28px;
+    text-align: center;
+  }
+  .empty p {
+    margin: 0;
+  }
+
+  /* CTAs */
+  .cta {
+    padding: clamp(24px, 4vw, 40px);
+    background: var(--brand-primary-soft);
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .cta-green {
+    background: var(--brand-green-soft);
+  }
+  .cta-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--brand-primary);
+    margin-bottom: 16px;
+  }
+  .cta-green .cta-icon {
+    color: var(--brand-green-strong);
+  }
+  .cta h2 {
+    color: var(--brand-primary);
+  }
+  .cta p {
+    max-width: 48ch;
+  }
+</style>
