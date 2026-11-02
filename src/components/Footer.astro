@@ -46,7 +46,12 @@ const year = new Date().getFullYear();
 
     <div class="bottom">
       <p>&copy; {year} {site.name}. {site.tagline}</p>
-      <p><a href="/privacy/">Privacy</a></p>
+      <p class="bottom-links">
+        <a href="/privacy/">Privacy</a>
+        <span class="credit">
+          Website donated by <a href="https://clientbridgeusa.com" target="_blank" rel="noopener">ClientBridgeUSA</a>
+        </span>
+      </p>
     </div>
   </div>
 </footer>
@@ -132,5 +137,10 @@ const year = new Date().getFullYear();
   }
   .bottom p {
     margin: 0;
+  }
+  .bottom-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
   }
 </style>
