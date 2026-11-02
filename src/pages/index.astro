@@ -66,9 +66,6 @@ const lookFor = [
             <li><Icon name="check" size={18} /> No rush, breaks anytime</li>
           </ul>
         </div>
-        <div class="art-chip c1"><Icon name="film" size={18} /> Lights up, sound down</div>
-        <div class="art-chip c2"><Icon name="headphones" size={18} /> Headphones to borrow</div>
-        <div class="art-chip c3"><Icon name="clock" size={18} /> Sensory hours</div>
       </div>
     </div>
   </section>
@@ -293,11 +290,9 @@ const lookFor = [
     max-width: 460px;
     width: 100%;
     margin-inline: auto;
-    padding: 44px 0 64px;
   }
   .art-card {
     position: relative;
-    margin-inline: 6%;
     background: var(--surface);
     border-radius: var(--radius-lg);
     border: 1px solid var(--line);
@@ -349,45 +344,6 @@ const lookFor = [
   .art-card li :global(svg) {
     color: var(--brand-green);
     flex-shrink: 0;
-  }
-  .art-chip {
-    position: absolute;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--brand-primary);
-    color: #fff;
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    padding: 9px 14px;
-    border-radius: 999px;
-    box-shadow: var(--shadow-lift);
-    white-space: nowrap;
-  }
-  .art-chip :global(svg) {
-    color: #fff;
-  }
-  .c1 {
-    top: 0;
-    right: 0;
-  }
-  .c2 {
-    bottom: 8px;
-    left: 0;
-    background: var(--brand-primary);
-  }
-  .c2 :global(svg) {
-    color: #fff;
-  }
-  .c3 {
-    bottom: 8px;
-    right: 0;
-    background: #fff;
-    color: var(--brand-primary);
-    border: 1px solid var(--line);
-  }
-  .c3 :global(svg) {
-    color: var(--brand-green);
   }
   @media (max-width: 600px) {
     .hero-art {
