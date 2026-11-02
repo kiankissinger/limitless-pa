@@ -11,22 +11,26 @@ const link = (t.donation_link ?? '').trim();
   <section class="section">
     <div class="container soon">
       <span class="badge"><Icon name="heart" size={30} /></span>
-      <h1>{t.title}</h1>
-      <p class="lead">{t.lead}</p>
-      {
-        link && (
-          <a class="btn btn-primary give" href={link} target="_blank" rel="noopener">
-            {t.donation_button || 'Donate'}
-          </a>
-        )
-      }
+      <h1 data-cms="donate:title">{t.title}</h1>
+      <p class="lead" data-cms="donate:lead">{t.lead}</p>
+      <a
+        class="btn btn-primary give"
+        href={link}
+        target="_blank"
+        rel="noopener"
+        data-cms-show="donate:donation_link"
+        data-cms-attr="href|donate:donation_link"
+        hidden={!link}
+      >
+        <span data-cms="donate:donation_button">{t.donation_button || 'Donate'}</span>
+      </a>
 
       <div class="card meantime">
-        <h2>{t.ways_title}</h2>
-        <Fragment set:html={md(t.ways)} />
+        <h2 data-cms="donate:ways_title">{t.ways_title}</h2>
+        <div data-cms-md="donate:ways" set:html={md(t.ways)} />
       </div>
 
-      {t.notify && !link && <p class="notify" set:html={mdi(t.notify)} />}
+      <p class="notify" data-cms-mdi="donate:notify" data-cms-hide="donate:donation_link" hidden={!t.notify || !!link} set:html={mdi(t.notify)} />
     </div>
   </section>
 </Base>

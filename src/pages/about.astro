@@ -10,37 +10,37 @@ const t = await getCopy('about');
 <Base title="About us" description="Limitless PA connects Pennsylvania families of kids with special needs to welcoming places, events, and community.">
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="about:eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="about:title">{t.title}</h1>
+      <p data-cms="about:intro">{t.intro}</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container about-grid">
       <div class="prose">
-        <h2>{t.why_title}</h2>
-        <Fragment set:html={md(t.why_body)} />
+        <h2 data-cms="about:why_title">{t.why_title}</h2>
+        <div data-cms-md="about:why_body" set:html={md(t.why_body)} />
 
-        <h2>{t.do_title}</h2>
-        <ul class="do-list">
+        <h2 data-cms="about:do_title">{t.do_title}</h2>
+        <ul class="do-list" data-cms-list="about:do_items">
           {
             (t.do_items ?? []).map((i: { icon: any; title: string; text: string }) => (
-              <li>
-                <Icon name={i.icon || 'check'} size={22} />
+              <li data-cms-item>
+                <Icon name={i.icon || 'check'} size={22} data-cms-field-icon="icon" />
                 <span>
-                  <strong>{i.title}</strong> {i.text}
+                  <strong data-cms-field="title">{i.title}</strong> <span data-cms-field="text">{i.text}</span>
                 </span>
               </li>
             ))
           }
         </ul>
 
-        <h2>{t.not_title}</h2>
-        <Fragment set:html={md(t.not_body)} />
+        <h2 data-cms="about:not_title">{t.not_title}</h2>
+        <div data-cms-md="about:not_body" set:html={md(t.not_body)} />
 
-        <h2>{t.how_title}</h2>
-        <Fragment set:html={md(t.how_body)} />
+        <h2 data-cms="about:how_title">{t.how_title}</h2>
+        <div data-cms-md="about:how_body" set:html={md(t.how_body)} />
       </div>
 
       <aside class="side">
@@ -48,7 +48,7 @@ const t = await getCopy('about');
           <Logo variant="stacked" height={150} />
         </div>
         <div class="card help">
-          <h2>{t.help_title}</h2>
+          <h2 data-cms="about:help_title">{t.help_title}</h2>
           <ul>
             <li><a href="/suggest/">Suggest a place</a></li>
             <li><a href="/submit-event/">Share an event</a></li>

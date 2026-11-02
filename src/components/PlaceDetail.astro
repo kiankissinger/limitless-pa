@@ -1,0 +1,286 @@
+---
+// Place detail layout, shared by the real place pages and the CMS live
+// preview. Every editable element carries a data-cms-* binding (see
+// src/scripts/cms-preview.ts). Optional rows are always rendered and
+// hidden when empty so the preview can reveal them as editors type.
+import Icon from './Icon.astro';
+import { accommodations, categoryById, type CategoryId } from '../data/taxonomy';
+import { mdEntry } from '../lib/markdown';
+
+interface Props {
+  data: Record<string, any>;
+  body?: string;
+}
+
+const { data: d, body = '' } = Astro.props;
+const cat = categoryById[d.category as CategoryId] ?? categoryById['community'];
+const accs: string[] = d.accommodations ?? [];
+const bodyHtml = mdEntry(body.trim());
+const hints = Object.fromEntries(accommodations.map((a) => [a.id, a.hint])) as Record<string, string>;
+const mapUrl = d.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${d.name}, ${d.address}`)}` : '';
+const verified = d.verified
+  ? new Date(d.verified).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+  : '';
+const where = d.multiLocation ? 'Multiple locations across Pennsylvania' : [d.city, d.region].filter(Boolean).join(' · ');
+const tel = d.phone ? `tel:${String(d.phone).replace(/[^\d+]/g, '')}` : '';
+---
+
+<section class="page-hero">
+  <div class="container">
+    <a class="back" href="/places/"><Icon name="back" size={18} /> All places</a>
+    <div class="cat">
+      <span class="cat-icon"><Icon name={cat.icon as any} size={20} data-cms-compute="place-cat-icon" /></span>
+      <span data-cms-compute="place-cat-label">{cat.label}</span>
+    </div>
+    <h1 data-cms="entry:name">{d.name}</h1>
+    <p class="where"><Icon name="pin" size={18} /> <span data-cms-compute="place-where">{where}</span></p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container detail">
+    <div class="main">
+      <p class="summary" data-cms="entry:summary">{d.summary}</p>
+
+      <div data-cms-show="entry:accommodations" hidden={accs.length === 0}>
+        <h2>Accommodations</h2>
+        <ul class="acc-list" data-cms-list="entry:accommodations">
+          <template data-cms-item-template>
+            <li data-cms-item>
+              <span class="check"><Icon name="check" size={18} /></span>
+              <div>
+                <strong data-cms-field="."></strong>
+                <span data-cms-field-compute="acc-hint"></span>
+              </div>
+            </li>
+          </template>
+          {
+            accs.map((a) => (
+              <li data-cms-item>
+                <span class="check">
+                  <Icon name="check" size={18} />
+                </span>
+                <div>
+                  <strong data-cms-field=".">{a}</strong>
+                  <span data-cms-field-compute="acc-hint" hidden={!hints[a]}>{hints[a]}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="prose notes" data-cms-show="entry:body" hidden={!bodyHtml}>
+        <h2>Good to know</h2>
+        <div data-cms-md-entry="entry:body" set:html={bodyHtml} />
+      </div>
+
+      <div class="notice">
+        <Icon name="info" size={22} />
+        <p>
+          Programs and accommodations can change<span data-cms-show="entry:multiLocation" hidden={!d.multiLocation}
+            >, and they can vary by location</span
+          >. Please call or check the website before you go. Something out of date? <a
+            href={`/contact/?about=${encodeURIComponent(d.name ?? '')}`}>Let us know</a
+          >.
+        </p>
+      </div>
+    </div>
+
+    <aside class="side card">
+      <h2 class="visually-hidden">Details</h2>
+      <dl>
+        <div data-cms-show="entry:schedule" hidden={!d.schedule}>
+          <dt>
+            <Icon name="clock" size={18} /> When
+          </dt>
+          <dd data-cms="entry:schedule">{d.schedule}</dd>
+        </div>
+        <div data-cms-show="entry:address" hidden={!d.address}>
+          <dt>
+            <Icon name="pin" size={18} /> Address
+          </dt>
+          <dd>
+            <span data-cms="entry:address">{d.address}</span>
+            <br />
+            <a href={mapUrl} target="_blank" rel="noopener" data-cms-compute="place-maps">Open in Maps</a>
+          </dd>
+        </div>
+        <div data-cms-show="entry:ages" hidden={!d.ages}>
+          <dt>
+            <Icon name="child" size={18} /> Ages
+          </dt>
+          <dd data-cms="entry:ages">{d.ages}</dd>
+        </div>
+        <div data-cms-show="entry:cost" hidden={!d.cost}>
+          <dt>
+            <Icon name="dollar" size={18} /> Cost
+          </dt>
+          <dd data-cms="entry:cost">{d.cost}</dd>
+        </div>
+        <div data-cms-show="entry:phone" hidden={!d.phone}>
+          <dt>
+            <Icon name="phone" size={18} /> Phone
+          </dt>
+          <dd>
+            <a href={tel} data-cms="entry:phone" data-cms-compute="place-tel">{d.phone}</a>
+          </dd>
+        </div>
+      </dl>
+      <a
+        class="btn btn-primary site-btn"
+        href={d.website}
+        target="_blank"
+        rel="noopener"
+        data-cms-show="entry:website"
+        data-cms-attr="href|entry:website"
+        hidden={!d.website}
+      >
+        Visit website <Icon name="external" size={18} />
+      </a>
+      <p class="verified" data-cms-compute="place-verified-row" hidden={!(verified || d.source)}>
+        <span data-cms-compute="place-verified" hidden={!verified}>Details checked {verified}. </span>
+        <a
+          href={d.source}
+          target="_blank"
+          rel="noopener"
+          data-cms-show="entry:source"
+          data-cms-attr="href|entry:source"
+          hidden={!d.source}>Source</a
+        >
+      </p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+  .cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: var(--brand-primary);
+    margin-bottom: 8px;
+  }
+  .cat-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--brand-primary);
+  }
+  h1 {
+    color: var(--brand-primary);
+  }
+  .where {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .detail {
+    display: grid;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .detail {
+      grid-template-columns: 1fr 340px;
+      gap: 48px;
+    }
+    .side {
+      position: sticky;
+      top: 96px;
+    }
+  }
+  .summary {
+    font-size: 1.2rem;
+  }
+  .main h2 {
+    font-size: 1.35rem;
+    color: var(--brand-primary);
+    margin-top: 1.4em;
+  }
+  .acc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: grid;
+    gap: 10px;
+  }
+  @media (min-width: 640px) {
+    .acc-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .acc-list li {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .acc-list strong {
+    display: block;
+  }
+  .acc-list span:not(.check) {
+    font-size: 0.92rem;
+    color: var(--ink-muted);
+  }
+  .check {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--brand-primary);
+  }
+  .notes {
+    margin-bottom: 24px;
+  }
+  .notice {
+    margin-top: 24px;
+  }
+  .side {
+    padding: 24px;
+  }
+  dl {
+    margin: 0 0 20px;
+    display: grid;
+    gap: 16px;
+  }
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--brand-primary);
+  }
+  dt :global(svg) {
+    color: var(--brand-green);
+  }
+  dd {
+    margin: 4px 0 0 26px;
+  }
+  .site-btn {
+    width: 100%;
+  }
+  .verified {
+    margin: 14px 0 0;
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+  }
+</style>

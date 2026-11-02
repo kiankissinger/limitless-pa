@@ -1,0 +1,10 @@
+---
+// Blank event page used by the CMS live preview for brand-new events.
+import Base from '../../../layouts/Base.astro';
+import EventDetail from '../../../components/EventDetail.astro';
+const sample = { title: 'New event', region: 'Statewide', summary: '', accommodations: [] };
+---
+
+<Base title="Event preview" noindex>
+  <EventDetail data={sample} />
+</Base>

@@ -13,9 +13,9 @@ const t = (await getCopy('forms')).suggest;
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="forms:suggest.eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="forms:suggest.title">{t.title}</h1>
+      <p data-cms="forms:suggest.intro">{t.intro}</p>
     </div>
   </section>
 
@@ -116,15 +116,15 @@ const t = (await getCopy('forms')).suggest;
         <div class="card tip">
           <Icon name="info" size={22} />
           <div>
-            <h2>{t.next_title}</h2>
-            <Fragment set:html={md(t.next_body)} />
+            <h2 data-cms="forms:suggest.next_title">{t.next_title}</h2>
+            <div data-cms-md="forms:suggest.next_body" set:html={md(t.next_body)} />
           </div>
         </div>
         <div class="card tip">
           <Icon name="store" size={22} />
           <div>
-            <h2>{t.owner_title}</h2>
-            <Fragment set:html={md(t.owner_body)} />
+            <h2 data-cms="forms:suggest.owner_title">{t.owner_title}</h2>
+            <div data-cms-md="forms:suggest.owner_body" set:html={md(t.owner_body)} />
           </div>
         </div>
       </aside>

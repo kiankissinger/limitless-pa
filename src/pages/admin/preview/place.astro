@@ -1,0 +1,10 @@
+---
+// Blank place page used by the CMS live preview for brand-new places.
+import Base from '../../../layouts/Base.astro';
+import PlaceDetail from '../../../components/PlaceDetail.astro';
+const sample = { name: 'New place', category: 'community', region: 'Statewide', summary: '', accommodations: [] };
+---
+
+<Base title="Place preview" noindex>
+  <PlaceDetail data={sample} />
+</Base>

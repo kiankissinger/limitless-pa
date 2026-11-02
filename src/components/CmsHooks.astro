@@ -1,0 +1,19 @@
+---
+// Loads the CMS live-preview script only inside the editor (?cms-preview),
+// and the "Edit this page" button only for signed-in editors. Regular
+// visitors download neither.
+---
+
+<script>
+  if (new URLSearchParams(location.search).has('cms-preview')) {
+    import('../scripts/cms-preview').then((m) => m.start());
+  } else {
+    let signedIn = false;
+    try {
+      signedIn = Boolean(localStorage.getItem('decap-cms-user'));
+    } catch {
+      /* storage unavailable */
+    }
+    if (signedIn) import('../scripts/cms-edit-button').then((m) => m.start());
+  }
+</script>

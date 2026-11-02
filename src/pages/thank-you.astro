@@ -10,8 +10,8 @@ const t = (await getCopy('forms')).thank_you;
   <section class="section">
     <div class="container thanks">
       <span class="badge"><Icon name="check" size={36} /></span>
-      <h1>{t.title}</h1>
-      <p>{t.text}</p>
+      <h1 data-cms="forms:thank_you.title">{t.title}</h1>
+      <p data-cms="forms:thank_you.text">{t.text}</p>
       <div class="actions">
         <a class="btn btn-primary" href="/places/">Browse places</a>
         <a class="btn btn-secondary" href="/">Back to home</a>

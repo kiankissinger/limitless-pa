@@ -23,9 +23,9 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="places-page:eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="places-page:title">{t.title}</h1>
+      <p data-cms="places-page:intro">{t.intro}</p>
     </div>
   </section>
 
@@ -95,8 +95,8 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
 
         <div class="no-results card" id="no-results" hidden>
           <Icon name="search" size={28} />
-          <h2>{t.no_results_title}</h2>
-          <p>{t.no_results_text}</p>
+          <h2 data-cms="places-page:no_results_title">{t.no_results_title}</h2>
+          <p data-cms="places-page:no_results_text">{t.no_results_text}</p>
           <div class="no-results-actions">
             <button type="button" class="btn btn-secondary" id="clear-2">Clear filters</button>
             <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
@@ -104,7 +104,7 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
         </div>
 
         <div class="suggest-band">
-          <p set:html={mdi(t.suggest_band)} />
+          <p data-cms-mdi="places-page:suggest_band" set:html={mdi(t.suggest_band)} />
           <a class="btn btn-primary" href="/suggest/">Suggest a place</a>
         </div>
       </div>

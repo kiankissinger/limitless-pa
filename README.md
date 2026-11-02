@@ -120,6 +120,14 @@ Go to **https://limitlesspa.org/admin** and choose **Login with GitHub**. From t
 - **Page text**: change the wording on every page, including the home page, About, For businesses, Resources,
   Donate, form pages, Privacy, and the footer/newsletter text.
 
+**Edit mode (live preview).** Next to every form, the CMS shows the real page — same design, fonts, and
+logo — and updates it as you type, highlighting what changed. Use **Desktop / Tablet / Phone** to see it on
+different screens. On "Forms & confirmation pages", the **Show** buttons switch between those pages. The eye
+button hides the preview if you want more room to type.
+
+**View mode.** Browse limitlesspa.org as usual. On a browser where you're signed in to the CMS, an
+**Edit this page** button appears in the corner and opens that exact page in the editor. Visitors never see it.
+
 Click **Publish → Publish now** to save. The live site updates in about a minute. Every change is saved
 to the GitHub repo history, so nothing is ever lost and any change can be undone.
 
@@ -145,6 +153,10 @@ Editors sign in with a free GitHub account. To turn this on:
    (GitHub repo → Settings → Collaborators). They accept the email invite, then log in at `/admin`.
 
 The CMS settings are generated from code (`src/pages/admin/config.yml.ts`), so the dropdowns always match the site.
+
+How the live preview works (for developers): `public/admin/preview.js` loads the real page with `?cms-preview`
+in an iframe and posts the unsaved entry to it; `src/scripts/cms-preview.ts` writes it into elements marked
+with `data-cms-*` attributes. When adding editable text to a page, add the matching `data-cms` attribute.
 
 ## Newsletter
 

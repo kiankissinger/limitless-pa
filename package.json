@@ -11,7 +11,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^5.18.2",
-    "marked": "18.1.1"
+    "marked": "18.1.1",
+    "marked-smartypants": "1.1.12"
   },
   "private": true,
   "type": "module",

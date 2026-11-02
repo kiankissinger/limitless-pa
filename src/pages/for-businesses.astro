@@ -12,9 +12,9 @@ const t = await getCopy('for-businesses');
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="for-businesses:eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="for-businesses:title">{t.title}</h1>
+      <p data-cms="for-businesses:intro">{t.intro}</p>
     </div>
   </section>
 
@@ -22,12 +22,12 @@ const t = await getCopy('for-businesses');
     <div class="container">
       <div class="why">
         <div class="stat card">
-          <span class="num">{t.stat_number}</span>
-          <p set:html={mdi(t.stat_text)} />
+          <span class="num" data-cms="for-businesses:stat_number">{t.stat_number}</span>
+          <p data-cms-mdi="for-businesses:stat_text" set:html={mdi(t.stat_text)} />
         </div>
         <div class="prose">
-          <h2>{t.why_title}</h2>
-          <Fragment set:html={md(t.why_body)} />
+          <h2 data-cms="for-businesses:why_title">{t.why_title}</h2>
+          <div data-cms-md="for-businesses:why_body" set:html={md(t.why_body)} />
         </div>
       </div>
     </div>
@@ -36,19 +36,19 @@ const t = await getCopy('for-businesses');
   <section class="section section-alt">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">{t.ideas_eyebrow}</span>
-        <h2>{t.ideas_title}</h2>
-        <p>{t.ideas_intro}</p>
+        <span class="eyebrow" data-cms="for-businesses:ideas_eyebrow">{t.ideas_eyebrow}</span>
+        <h2 data-cms="for-businesses:ideas_title">{t.ideas_title}</h2>
+        <p data-cms="for-businesses:ideas_intro">{t.ideas_intro}</p>
       </div>
-      <ul class="ideas">
+      <ul class="ideas" data-cms-list="for-businesses:ideas">
         {
           (t.ideas ?? []).map((i: { icon: any; title: string; text: string }) => (
-            <li class="card idea">
+            <li class="card idea" data-cms-item>
               <span class="idea-icon">
-                <Icon name={i.icon || 'check'} size={24} />
+                <Icon name={i.icon || 'check'} size={24} data-cms-field-icon="icon" />
               </span>
-              <h3>{i.title}</h3>
-              <p>{i.text}</p>
+              <h3 data-cms-field="title">{i.title}</h3>
+              <p data-cms-field="text">{i.text}</p>
             </li>
           ))
         }
@@ -59,15 +59,15 @@ const t = await getCopy('for-businesses');
   <section class="section">
     <div class="container steps-wrap">
       <div>
-        <span class="eyebrow">{t.steps_eyebrow}</span>
-        <h2>{t.steps_title}</h2>
-        <ol class="steps">
+        <span class="eyebrow" data-cms="for-businesses:steps_eyebrow">{t.steps_eyebrow}</span>
+        <h2 data-cms="for-businesses:steps_title">{t.steps_title}</h2>
+        <ol class="steps" data-cms-list="for-businesses:steps">
           {
             (t.steps ?? []).map((step: { title: string; text: string }, n: number) => (
-              <li>
-                <span>{n + 1}</span>
+              <li data-cms-item>
+                <span data-cms-field-index>{n + 1}</span>
                 <div>
-                  <strong>{step.title}</strong> {step.text}
+                  <strong data-cms-field="title">{step.title}</strong> <span data-cms-field="text">{step.text}</span>
                 </div>
               </li>
             ))
@@ -75,11 +75,11 @@ const t = await getCopy('for-businesses');
         </ol>
       </div>
       <div class="card cta">
-        <h2>{t.cta_title}</h2>
-        <p>{t.cta_text}</p>
+        <h2 data-cms="for-businesses:cta_title">{t.cta_title}</h2>
+        <p data-cms="for-businesses:cta_text">{t.cta_text}</p>
         <a class="btn btn-primary" href="/suggest/?role=owner">List my business</a>
         <a class="btn btn-secondary" href="/submit-event/">Share an event</a>
-        <p class="small" set:html={mdi(t.cta_note)} />
+        <p class="small" data-cms-mdi="for-businesses:cta_note" set:html={mdi(t.cta_note)} />
       </div>
     </div>
   </section>
@@ -184,7 +184,7 @@ const t = await getCopy('for-businesses');
     gap: 16px;
     align-items: flex-start;
   }
-  .steps span {
+  .steps li > span {
     display: grid;
     place-items: center;
     flex-shrink: 0;

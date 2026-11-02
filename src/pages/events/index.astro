@@ -26,9 +26,9 @@ for (const e of upcoming) {
   <section class="page-hero">
     <div class="container hero-row">
       <div>
-        <span class="eyebrow">{t.eyebrow}</span>
-        <h1>{t.title}</h1>
-        <p>{t.intro}</p>
+        <span class="eyebrow" data-cms="events-page:eyebrow">{t.eyebrow}</span>
+        <h1 data-cms="events-page:title">{t.title}</h1>
+        <p data-cms="events-page:intro">{t.intro}</p>
       </div>
       <a class="btn btn-primary" href="/submit-event/"><Icon name="plus" size={18} /> Share an event</a>
     </div>
@@ -36,7 +36,7 @@ for (const e of upcoming) {
 
   <section class="section-tight">
     <div class="container">
-      <h2 class="group-title">{t.upcoming_title}</h2>
+      <h2 class="group-title" data-cms="events-page:upcoming_title">{t.upcoming_title}</h2>
       {
         upcoming.length > 0 ? (
           [...groups.entries()].map(([key, list]) => (
@@ -54,8 +54,8 @@ for (const e of upcoming) {
       <div class="empty card" id="events-empty" hidden={upcoming.length > 0}>
         <Icon name="calendar" size={28} />
         <p>
-          <strong>{t.empty_title}</strong><br />
-          <span set:html={mdi(t.empty_text)} />
+          <strong data-cms="events-page:empty_title">{t.empty_title}</strong><br />
+          <span data-cms-mdi="events-page:empty_text" set:html={mdi(t.empty_text)} />
         </p>
       </div>
     </div>
@@ -65,8 +65,8 @@ for (const e of upcoming) {
     recurring.length > 0 && (
       <section class="section-tight recurring">
         <div class="container">
-          <h2 class="group-title">{t.recurring_title}</h2>
-          <p class="sub">{t.recurring_intro}</p>
+          <h2 class="group-title" data-cms="events-page:recurring_title">{t.recurring_title}</h2>
+          <p class="sub" data-cms="events-page:recurring_intro">{t.recurring_intro}</p>
           <div class="grid grid-2">
             {recurring.map((e) => (
               <EventCard event={e} />
@@ -81,8 +81,8 @@ for (const e of upcoming) {
     <div class="container">
       <div class="host card">
         <div>
-          <h2>{t.host_title}</h2>
-          <p>{t.host_text}</p>
+          <h2 data-cms="events-page:host_title">{t.host_title}</h2>
+          <p data-cms="events-page:host_text">{t.host_text}</p>
         </div>
         <a class="btn btn-primary" href="/submit-event/">Share an event</a>
       </div>

@@ -12,28 +12,28 @@ const t = await getCopy('resources');
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="resources:eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="resources:title">{t.title}</h1>
+      <p data-cms="resources:intro">{t.intro}</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <h2>{t.tips_title}</h2>
-        <p>{t.tips_intro}</p>
+        <h2 data-cms="resources:tips_title">{t.tips_title}</h2>
+        <p data-cms="resources:tips_intro">{t.tips_intro}</p>
       </div>
-      <ul class="tips">
+      <ul class="tips" data-cms-list="resources:tips">
         {
           (t.tips ?? []).map((tip: { icon: any; title: string; text: string }) => (
-            <li class="card tip-card">
+            <li class="card tip-card" data-cms-item>
               <span class="tip-icon">
-                <Icon name={tip.icon || 'check'} size={22} />
+                <Icon name={tip.icon || 'check'} size={22} data-cms-field-icon="icon" />
               </span>
               <div>
-                <h3>{tip.title}</h3>
-                <p>{tip.text}</p>
+                <h3 data-cms-field="title">{tip.title}</h3>
+                <p data-cms-field="text">{tip.text}</p>
               </div>
             </li>
           ))
@@ -45,16 +45,16 @@ const t = await getCopy('resources');
   <section class="section section-alt">
     <div class="container two-col">
       <div>
-        <span class="eyebrow">{t.questions_eyebrow}</span>
-        <h2>{t.questions_title}</h2>
-        <p class="muted">{t.questions_intro}</p>
+        <span class="eyebrow" data-cms="resources:questions_eyebrow">{t.questions_eyebrow}</span>
+        <h2 data-cms="resources:questions_title">{t.questions_title}</h2>
+        <p class="muted" data-cms="resources:questions_intro">{t.questions_intro}</p>
       </div>
-      <ul class="questions card">
+      <ul class="questions card" data-cms-list="resources:questions">
         {
           (t.questions ?? []).map((q: string) => (
-            <li>
+            <li data-cms-item>
               <Icon name="message" size={20} />
-              <span>{q}</span>
+              <span data-cms-field=".">{q}</span>
             </li>
           ))
         }
@@ -65,21 +65,19 @@ const t = await getCopy('resources');
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">{t.orgs_eyebrow}</span>
-        <h2>{t.orgs_title}</h2>
-        <p>{t.orgs_intro}</p>
+        <span class="eyebrow" data-cms="resources:orgs_eyebrow">{t.orgs_eyebrow}</span>
+        <h2 data-cms="resources:orgs_title">{t.orgs_title}</h2>
+        <p data-cms="resources:orgs_intro">{t.orgs_intro}</p>
       </div>
-      <ul class="orgs grid grid-2">
+      <ul class="orgs grid grid-2" data-cms-list="resources:orgs">
         {
           (t.orgs ?? []).map((o: { name: string; url: string; text: string }) => (
-            <li class="card org">
-              <h3>{o.name}</h3>
-              <p>{o.text}</p>
-              {o.url && (
-                <a href={o.url} target="_blank" rel="noopener">
-                  Visit website <Icon name="external" size={16} />
-                </a>
-              )}
+            <li class="card org" data-cms-item>
+              <h3 data-cms-field="name">{o.name}</h3>
+              <p data-cms-field="text">{o.text}</p>
+              <a href={o.url} target="_blank" rel="noopener" data-cms-field-href="url" hidden={!o.url}>
+                Visit website <Icon name="external" size={16} />
+              </a>
             </li>
           ))
         }
@@ -87,7 +85,7 @@ const t = await getCopy('resources');
 
       <div class="notice note">
         <Icon name="shield" size={22} />
-        <p set:html={mdi(t.note)} />
+        <p data-cms-mdi="resources:note" set:html={mdi(t.note)} />
       </div>
     </div>
   </section>

@@ -67,6 +67,12 @@ svg {
   max-width: 100%;
 }
 
+/* Anything marked hidden stays hidden, whatever its other styles say
+   (used by optional details and the CMS live preview). */
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3,

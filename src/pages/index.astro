@@ -25,14 +25,16 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <span class="eyebrow">{t.hero.eyebrow}</span>
-        <h1>{t.hero.title}</h1>
-        <p class="lead">{t.hero.intro}</p>
+        <span class="eyebrow" data-cms="home:hero.eyebrow">{t.hero.eyebrow}</span>
+        <h1 data-cms="home:hero.title">{t.hero.title}</h1>
+        <p class="lead" data-cms="home:hero.intro">{t.hero.intro}</p>
 
         <form class="hero-search" action="/places/" method="get" role="search">
           <label for="hero-q" class="visually-hidden">Search places</label>
           <Icon name="search" size={22} />
-          <input id="hero-q" name="q" type="search" placeholder={t.hero.search_placeholder} />
+          <input id="hero-q" name="q" type="search" placeholder={t.hero.search_placeholder}
+            data-cms-attr="placeholder|home:hero.search_placeholder"
+          />
           <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
@@ -47,12 +49,18 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
           <div class="art-head">
             <span class="art-icon"><Icon name="scissors" size={22} /></span>
             <div>
-              <strong>{t.example.title}</strong>
-              <span>{t.example.category}</span>
+              <strong data-cms="home:example.title">{t.example.title}</strong>
+              <span data-cms="home:example.category">{t.example.category}</span>
             </div>
           </div>
-          <ul>
-            {(t.example.items ?? []).map((item: string) => <li><Icon name="check" size={18} /> {item}</li>)}
+          <ul data-cms-list="home:example.items">
+            {
+              (t.example.items ?? []).map((item: string) => (
+                <li data-cms-item>
+                  <Icon name="check" size={18} /> <span data-cms-field=".">{item}</span>
+                </li>
+              ))
+            }
           </ul>
         </div>
       </div>
@@ -64,7 +72,7 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
     <div class="container strip-inner">
       <Icon name="shield" size={26} />
       <p>
-        <strong>{t.notice.title}</strong> {t.notice.text}
+        <strong data-cms="home:notice.title">{t.notice.title}</strong> <span data-cms="home:notice.text">{t.notice.text}</span>
       </p>
     </div>
   </section>
@@ -73,8 +81,8 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">{t.categories.eyebrow}</span>
-        <h2>{t.categories.title}</h2>
+        <span class="eyebrow" data-cms="home:categories.eyebrow">{t.categories.eyebrow}</span>
+        <h2 data-cms="home:categories.title">{t.categories.title}</h2>
       </div>
       <ul class="cat-grid">
         {
@@ -103,8 +111,8 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
         <div class="container">
           <div class="head-row">
             <div class="section-head">
-              <span class="eyebrow">{t.featured.eyebrow}</span>
-              <h2>{t.featured.title}</h2>
+              <span class="eyebrow" data-cms="home:featured.eyebrow">{t.featured.eyebrow}</span>
+              <h2 data-cms="home:featured.title">{t.featured.title}</h2>
             </div>
             <a class="btn btn-secondary" href="/places/">
               See all places
@@ -124,19 +132,19 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">{t.look_for.eyebrow}</span>
-        <h2>{t.look_for.title}</h2>
-        <p>{t.look_for.intro}</p>
+        <span class="eyebrow" data-cms="home:look_for.eyebrow">{t.look_for.eyebrow}</span>
+        <h2 data-cms="home:look_for.title">{t.look_for.title}</h2>
+        <p data-cms="home:look_for.intro">{t.look_for.intro}</p>
       </div>
-      <ul class="look-grid">
+      <ul class="look-grid" data-cms-list="home:look_for.items">
         {
           (t.look_for.items ?? []).map((l: { icon: any; title: string; text: string }) => (
-            <li class="look card">
+            <li class="look card" data-cms-item>
               <span class="look-icon">
-                <Icon name={l.icon || 'check'} size={24} />
+                <Icon name={l.icon || 'check'} size={24} data-cms-field-icon="icon" />
               </span>
-              <h3>{l.title}</h3>
-              <p>{l.text}</p>
+              <h3 data-cms-field="title">{l.title}</h3>
+              <p data-cms-field="text">{l.text}</p>
             </li>
           ))
         }
@@ -149,8 +157,8 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
     <div class="container">
       <div class="head-row">
         <div class="section-head">
-          <span class="eyebrow">{t.events.eyebrow}</span>
-          <h2>{t.events.title}</h2>
+          <span class="eyebrow" data-cms="home:events.eyebrow">{t.events.eyebrow}</span>
+          <h2 data-cms="home:events.title">{t.events.title}</h2>
         </div>
         <a class="btn btn-secondary" href="/events/">All events</a>
       </div>
@@ -163,7 +171,7 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
           </div>
         ) : (
           <div class="empty card">
-            <p set:html={mdi(t.events.empty)} />
+            <p data-cms-mdi="home:events.empty" set:html={mdi(t.events.empty)} />
           </div>
         )
       }
@@ -175,15 +183,15 @@ const countByCat = Object.fromEntries(categories.map((c) => [c.id, places.filter
     <div class="container grid grid-2">
       <div class="cta card">
         <span class="cta-icon"><Icon name="heart" size={28} /></span>
-        <h2>{t.cta_suggest.title}</h2>
-        <p>{t.cta_suggest.text}</p>
-        <a class="btn btn-primary" href="/suggest/">{t.cta_suggest.button}</a>
+        <h2 data-cms="home:cta_suggest.title">{t.cta_suggest.title}</h2>
+        <p data-cms="home:cta_suggest.text">{t.cta_suggest.text}</p>
+        <a class="btn btn-primary" href="/suggest/" data-cms="home:cta_suggest.button">{t.cta_suggest.button}</a>
       </div>
       <div class="cta card cta-green">
         <span class="cta-icon"><Icon name="store" size={28} /></span>
-        <h2>{t.cta_business.title}</h2>
-        <p>{t.cta_business.text}</p>
-        <a class="btn btn-secondary" href="/for-businesses/">{t.cta_business.button}</a>
+        <h2 data-cms="home:cta_business.title">{t.cta_business.title}</h2>
+        <p data-cms="home:cta_business.text">{t.cta_business.text}</p>
+        <a class="btn btn-secondary" href="/for-businesses/" data-cms="home:cta_business.button">{t.cta_business.button}</a>
       </div>
     </div>
   </section>

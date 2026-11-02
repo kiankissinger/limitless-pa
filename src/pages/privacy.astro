@@ -8,11 +8,11 @@ const t = await getCopy('privacy');
 <Base title="Privacy" description="How Limitless PA handles the information you share with us.">
   <section class="page-hero">
     <div class="container">
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <h1 data-cms="privacy:title">{t.title}</h1>
+      <p data-cms="privacy:intro">{t.intro}</p>
     </div>
   </section>
   <section class="section-tight">
-    <div class="container prose" set:html={md(t.body)} />
+    <div class="container prose" data-cms-md="privacy:body" set:html={md(t.body)} />
   </section>
 </Base>

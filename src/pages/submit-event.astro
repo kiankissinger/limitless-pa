@@ -13,9 +13,9 @@ const t = (await getCopy('forms')).event;
 >
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="forms:event.eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="forms:event.title">{t.title}</h1>
+      <p data-cms="forms:event.intro">{t.intro}</p>
     </div>
   </section>
 
@@ -132,8 +132,8 @@ const t = (await getCopy('forms')).event;
         <div class="card tip">
           <Icon name="calendar" size={22} />
           <div>
-            <h2>{t.guidelines_title}</h2>
-            <Fragment set:html={md(t.guidelines_body)} />
+            <h2 data-cms="forms:event.guidelines_title">{t.guidelines_title}</h2>
+            <div data-cms-md="forms:event.guidelines_body" set:html={md(t.guidelines_body)} />
           </div>
         </div>
       </aside>

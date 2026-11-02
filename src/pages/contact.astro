@@ -9,9 +9,9 @@ const t = (await getCopy('forms')).contact;
 <Base title="Contact us" description="Get in touch with Limitless PA.">
   <section class="page-hero">
     <div class="container">
-      <span class="eyebrow">{t.eyebrow}</span>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
+      <span class="eyebrow" data-cms="forms:contact.eyebrow">{t.eyebrow}</span>
+      <h1 data-cms="forms:contact.title">{t.title}</h1>
+      <p data-cms="forms:contact.intro">{t.intro}</p>
     </div>
   </section>
 
@@ -69,8 +69,8 @@ const t = (await getCopy('forms')).contact;
         <div class="card tip">
           <Icon name="shield" size={22} />
           <div>
-            <h2>{t.note_title}</h2>
-            <Fragment set:html={md(t.note_body)} />
+            <h2 data-cms="forms:contact.note_title">{t.note_title}</h2>
+            <div data-cms-md="forms:contact.note_body" set:html={md(t.note_body)} />
           </div>
         </div>
       </aside>

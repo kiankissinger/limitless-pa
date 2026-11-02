@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
     <div class="top">
       <div class="about">
         <Logo variant="horizontal" height={64} />
-        <p>{t.footer_blurb}</p>
+        <p data-cms="site:footer_blurb">{t.footer_blurb}</p>
 
         <form
           class="newsletter"
@@ -27,12 +27,12 @@ const year = new Date().getFullYear();
           <input type="hidden" name="form-name" value="newsletter" />
           <input type="hidden" name="subject" value="New newsletter signup — Limitless PA" />
           <p class="honeypot"><label>Don’t fill this out: <input name="bot-field" /></label></p>
-          <h2 id="newsletter-title">{t.newsletter_title}</h2>
-          <p class="nl-text">{t.newsletter_text}</p>
+          <h2 id="newsletter-title" data-cms="site:newsletter_title">{t.newsletter_title}</h2>
+          <p class="nl-text" data-cms="site:newsletter_text">{t.newsletter_text}</p>
           <div class="nl-row">
             <label for="newsletter-email" class="visually-hidden">Email address</label>
             <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Email address" required />
-            <button class="btn btn-secondary" type="submit">{t.newsletter_button}</button>
+            <button class="btn btn-secondary" type="submit" data-cms="site:newsletter_button">{t.newsletter_button}</button>
           </div>
         </form>
       </div>
@@ -58,7 +58,7 @@ const year = new Date().getFullYear();
 
     <div class="disclaimer">
       <Icon name="info" size={22} />
-      <p set:html={mdi(t.disclaimer)} />
+      <p data-cms-mdi="site:disclaimer" set:html={mdi(t.disclaimer)} />
     </div>
 
     <div class="bottom">

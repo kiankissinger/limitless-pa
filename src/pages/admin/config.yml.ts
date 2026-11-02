@@ -63,6 +63,8 @@ const list = (name: string, label: string, fields: Field[], extra: Field = {}): 
   name,
   label,
   widget: 'list',
+  // Show every item's fields open, so editors can change what they see.
+  collapsed: false,
   fields,
   ...extra,
 });
@@ -130,7 +132,7 @@ const eventsCollection = {
   identifier_field: 'title',
   summary: '{{title}}',
   sortable_fields: ['title', 'date'],
-  editor: { preview: false },
+  preview_path: 'events/{{slug}}/',
   fields: [
     str('title', 'Event name'),
     opt('host', 'Hosted by'),
@@ -166,7 +168,7 @@ const placesCollection = {
   identifier_field: 'name',
   summary: '{{name}} — {{city}}',
   sortable_fields: ['name', 'region'],
-  editor: { preview: false },
+  preview_path: 'places/{{slug}}/',
   fields: [
     str('name', 'Name'),
     {
@@ -200,10 +202,25 @@ const placesCollection = {
   ],
 };
 
+// Where each page-text file shows up on the site ("View Live" link in the editor).
+const livePath: Record<string, string> = {
+  home: '/',
+  about: 'about/',
+  'for-businesses': 'for-businesses/',
+  resources: 'resources/',
+  donate: 'donate/',
+  'places-page': 'places/',
+  'events-page': 'events/',
+  forms: 'suggest/',
+  privacy: 'privacy/',
+  site: '/',
+};
+
 const page = (name: string, label: string, fields: Field[]) => ({
   name,
   label,
   file: `src/content/copy/${name}.yaml`,
+  preview_path: livePath[name],
   fields,
 });
 
@@ -211,7 +228,6 @@ const pagesCollection = {
   name: 'pages',
   label: 'Page text',
   description: 'The wording on each page of the site.',
-  editor: { preview: false },
   files: [
     page('home', 'Home page', [
       obj('hero', 'Top of page', [

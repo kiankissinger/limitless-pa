@@ -10,8 +10,8 @@ const t = (await getCopy('forms')).subscribed;
   <section class="section">
     <div class="container thanks">
       <span class="badge"><Icon name="mail" size={32} /></span>
-      <h1>{t.title}</h1>
-      <p>{t.text}</p>
+      <h1 data-cms="forms:subscribed.title">{t.title}</h1>
+      <p data-cms="forms:subscribed.text">{t.text}</p>
       <div class="actions">
         <a class="btn btn-primary" href="/places/">Browse places</a>
         <a class="btn btn-secondary" href="/">Back to home</a>
