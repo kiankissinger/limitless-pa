@@ -78,6 +78,7 @@ function each(attr: string, scope: string, fn: (el: Element, value: any) => void
 }
 
 let currentData: Data = {};
+let currentScope = '';
 
 function fillItem(node: Element, item: any, index: number) {
   const within = (sel: string) => [node, ...node.querySelectorAll(sel)].filter((n) => n.matches(sel));
@@ -163,6 +164,7 @@ function computeEntry(d: Data) {
 }
 
 function apply(scope: string, data: Data) {
+  currentScope = scope;
   currentData = data;
   changed = [];
   each('data-cms', scope, (el, v) => setText(el, v == null ? '' : String(v)));
@@ -203,6 +205,132 @@ function highlight(els: Element[]) {
   }
 }
 
+// ---- click to edit ------------------------------------------------------
+// Work out which CMS field an element in the page comes from, as
+// { scope, path } with a dotted path like "hero.title" or "items.2.text".
+type EditTarget = { scope: string; path: string; el: Element };
+
+const split = (key: string | null) => {
+  const i = (key ?? '').indexOf(':');
+  return i < 0 ? null : { scope: key!.slice(0, i), path: key!.slice(i + 1) };
+};
+
+// Derived page elements and the field that drives them.
+function computedField(name: string): string | null {
+  const d = currentData;
+  switch (name) {
+    case 'event-eyebrow':
+      return 'recurring';
+    case 'event-when':
+    case 'event-when-icon':
+      return d.date || !d.recurring ? 'date' : 'recurring';
+    case 'event-where':
+    case 'event-where-row':
+    case 'event-maps':
+      return d.location || !d.city ? 'location' : 'city';
+    case 'event-has-date':
+      return 'date';
+    case 'place-cat-icon':
+    case 'place-cat-label':
+      return 'category';
+    case 'place-where':
+      return d.multiLocation ? 'multiLocation' : 'city';
+    case 'place-maps':
+      return 'address';
+    case 'place-tel':
+      return 'phone';
+    case 'place-verified':
+    case 'place-verified-row':
+      return 'verified';
+    default:
+      return null;
+  }
+}
+
+const FIELD_ATTRS = ['data-cms-field', 'data-cms-field-icon', 'data-cms-field-href'];
+const DIRECT_ATTRS = ['data-cms', 'data-cms-md', 'data-cms-mdi', 'data-cms-md-entry'];
+
+function editTarget(start: EventTarget | null): EditTarget | null {
+  let el = start instanceof Element ? start : null;
+  while (el && el !== document.body) {
+    const item = el.hasAttribute('data-cms-item') || FIELD_ATTRS.some((a) => el!.hasAttribute(a)) ? el.closest('[data-cms-item]') : null;
+    const list = item?.parentElement?.closest('[data-cms-list]');
+    if (item && list) {
+      const key = split(list.getAttribute('data-cms-list'));
+      if (!key) return null;
+      // Accommodation tags are one multi-select field in the CMS.
+      if (key.scope === 'entry') return { ...key, el: list };
+      const index = Array.from(list.querySelectorAll(':scope > [data-cms-item]')).indexOf(item);
+      const attr = FIELD_ATTRS.find((a) => el!.hasAttribute(a));
+      const sub = attr ? el.getAttribute(attr) : null;
+      return { scope: key.scope, path: `${key.path}.${index}${sub && sub !== '.' ? `.${sub}` : ''}`, el };
+    }
+    for (const a of DIRECT_ATTRS) {
+      if (el.hasAttribute(a)) {
+        const key = split(el.getAttribute(a));
+        if (key) return { ...key, el };
+      }
+    }
+    if (el.hasAttribute('data-cms-attr')) {
+      const key = split(el.getAttribute('data-cms-attr')!.split('|')[1]);
+      if (key) return { ...key, el };
+    }
+    if (el.hasAttribute('data-cms-compute')) {
+      const path = computedField(el.getAttribute('data-cms-compute')!);
+      if (path) return { scope: 'entry', path, el };
+    }
+    for (const a of ['data-cms-list', 'data-cms-show', 'data-cms-hide']) {
+      if (el.hasAttribute(a)) {
+        const key = split(el.getAttribute(a));
+        if (key) return { ...key, el };
+      }
+    }
+    el = el.parentElement;
+  }
+  return null;
+}
+
+function setupClickToEdit() {
+  const box = document.createElement('div');
+  box.className = 'cms-hover';
+  box.hidden = true;
+  box.innerHTML = '<span>✎ Edit</span>';
+  document.body.appendChild(box);
+
+  const show = (t: EditTarget | null) => {
+    // Only text that belongs to what's open in the editor can be clicked.
+    if (!t || t.scope !== currentScope) {
+      box.hidden = true;
+      document.documentElement.classList.remove('cms-can-edit');
+      return;
+    }
+    const r = t.el.getBoundingClientRect();
+    Object.assign(box.style, {
+      top: `${r.top + scrollY - 6}px`,
+      left: `${r.left + scrollX - 6}px`,
+      width: `${r.width + 12}px`,
+      height: `${r.height + 12}px`,
+    });
+    box.hidden = false;
+    document.documentElement.classList.add('cms-can-edit');
+  };
+
+  document.addEventListener('mouseover', (e) => show(editTarget(e.target)));
+  document.addEventListener('mouseleave', () => show(null));
+  addEventListener('scroll', () => (box.hidden = true), { passive: true });
+
+  document.addEventListener(
+    'click',
+    (e) => {
+      const t = editTarget(e.target);
+      if (!t || t.scope !== currentScope) return;
+      e.preventDefault();
+      window.parent.postMessage({ type: 'limitless-cms:focus', scope: t.scope, path: t.path }, location.origin);
+    },
+    true,
+  );
+}
+
 export function start() {
   document.documentElement.classList.add('cms-preview');
 
@@ -227,19 +355,33 @@ export function start() {
   style.textContent = `
     .cms-changed { animation: cms-flash 1.6s ease-out; border-radius: 4px; }
     @keyframes cms-flash {
-      0%, 40% { outline: 2px solid #6b8753; outline-offset: 4px; }
-      100% { outline: 2px solid transparent; outline-offset: 4px; }
+      0%, 40% { outline: calc(2px * var(--cms-ui, 1)) solid #6b8753; outline-offset: 4px; }
+      100% { outline: calc(2px * var(--cms-ui, 1)) solid transparent; outline-offset: 4px; }
     }
-    @media (prefers-reduced-motion: reduce) { .cms-changed { animation: none; outline: 2px solid #6b8753; outline-offset: 4px; } }
+    @media (prefers-reduced-motion: reduce) {
+      .cms-changed { animation: none; outline: calc(2px * var(--cms-ui, 1)) solid #6b8753; outline-offset: 4px; }
+    }
     .cms-preview a, .cms-preview button { cursor: default; }
     .cms-preview h1[data-cms]:empty::before { content: 'Add a name'; opacity: 0.35; }
+    .cms-hover { position: absolute; z-index: 2147483000; pointer-events: none;
+      border: calc(2px * var(--cms-ui, 1)) dashed #6b8753; border-radius: 8px; }
+    .cms-hover span { position: absolute; left: -2px; bottom: 100%; background: #11404e; color: #fff;
+      font: 600 calc(12px * var(--cms-ui, 1)) / 1 system-ui, sans-serif;
+      padding: calc(5px * var(--cms-ui, 1)) calc(8px * var(--cms-ui, 1));
+      border-radius: 6px 6px 6px 0; white-space: nowrap; }
+    .cms-can-edit, .cms-can-edit * { cursor: pointer !important; }
   `;
   document.head.appendChild(style);
+  setupClickToEdit();
 
   window.addEventListener('message', (e) => {
     if (e.origin !== location.origin) return;
     const msg = e.data;
-    if (msg?.type === 'limitless-cms:update') apply(msg.scope, msg.data ?? {});
+    if (msg?.type === 'limitless-cms:update') {
+      // The editor shrinks the page to fit; keep the editing UI readable.
+      if (msg.scale) document.documentElement.style.setProperty('--cms-ui', String(1 / msg.scale));
+      apply(msg.scope, msg.data ?? {});
+    }
   });
   window.parent.postMessage({ type: 'limitless-cms:ready' }, location.origin);
 }

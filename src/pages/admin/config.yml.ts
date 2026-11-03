@@ -72,6 +72,7 @@ const stringList = (name: string, label: string, extra: Field = {}): Field => ({
   name,
   label,
   widget: 'list',
+  collapsed: false,
   field: { name: 'item', label: 'Item', widget: 'string' },
   ...extra,
 });

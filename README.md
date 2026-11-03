@@ -121,7 +121,8 @@ Go to **https://limitlesspa.org/admin** and choose **Login with GitHub**. From t
   Donate, form pages, Privacy, and the footer/newsletter text.
 
 **Edit mode (live preview).** Next to every form, the CMS shows the real page — same design, fonts, and
-logo — and updates it as you type, highlighting what changed. Use **Desktop / Tablet / Phone** to see it on
+logo — and updates it as you type, highlighting what changed. **Click any text in the preview** to jump
+straight to its field in the form (hover shows an "Edit" tag). Use **Desktop / Tablet / Phone** to see it on
 different screens. On "Forms & confirmation pages", the **Show** buttons switch between those pages. The eye
 button hides the preview if you want more room to type.
 

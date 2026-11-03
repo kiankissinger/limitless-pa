@@ -36,6 +36,84 @@
     site: [{ label: 'Footer (on every page)', path: '/', focus: '.site-footer' }],
   };
 
+  // ---- click to edit: find a field in the editor form by its path ----------
+  // Decap gives every field control an id like "title-field-12", and every list
+  // item has one drag handle (aria-roledescription="sortable"). Walk the path a
+  // segment at a time: field name -> its container, number -> nth list item.
+  function fieldContainer(scope, name) {
+    var labels = (scope || document).querySelectorAll('label[for^="' + name + '-field-"]');
+    var best = null;
+    var bestDepth = Infinity;
+    Array.prototype.forEach.call(labels, function (label) {
+      var depth = 0;
+      for (var n = label; n && n !== scope; n = n.parentElement) depth++;
+      if (depth < bestDepth) {
+        best = label;
+        bestDepth = depth;
+      }
+    });
+    // label -> top bar -> field container
+    return best && best.parentElement && best.parentElement.parentElement;
+  }
+
+  function findField(path) {
+    var scope = document;
+    var found = null;
+    var parts = String(path).split('.');
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i];
+      if (/^\d+$/.test(part)) {
+        if (!found) return null;
+        var handles = found.querySelectorAll('[aria-roledescription="sortable"]');
+        var handle = handles[Number(part)];
+        // handle -> item top bar -> list item
+        var item = handle && handle.parentElement && handle.parentElement.parentElement;
+        if (!item) return found;
+        found = item;
+      } else {
+        var next = fieldContainer(scope, part);
+        if (!next) return found;
+        found = next;
+      }
+      scope = found;
+    }
+    return found;
+  }
+
+  function focusField(path) {
+    var el = findField(path);
+    if (!el) return false;
+    // Prefer somewhere to type over toolbar buttons.
+    var input = null;
+    ['[contenteditable="true"]', 'textarea', 'input:not([type="hidden"])', '[role="switch"], button[aria-checked]'].some(
+      function (sel) {
+        input = el.querySelector(sel);
+        return !!input;
+      },
+    );
+    var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
+    window.setTimeout(function () {
+      if (input) {
+        try {
+          input.focus({ preventScroll: true });
+          if (typeof input.value === 'string' && input.setSelectionRange) {
+            input.setSelectionRange(input.value.length, input.value.length);
+          }
+        } catch (e) {
+          /* some widgets don't accept a selection */
+        }
+      }
+    }, smooth ? 300 : 0);
+    el.style.transition = 'box-shadow 0.3s ease';
+    el.style.borderRadius = '6px';
+    el.style.boxShadow = '0 0 0 3px #6b8753';
+    window.setTimeout(function () {
+      el.style.boxShadow = '';
+    }, 1800);
+    return true;
+  }
+
   var btn = function (active) {
     return {
       font: '500 13px/1 system-ui, sans-serif',
@@ -68,9 +146,9 @@
         var self = this;
         this.win = this.root.ownerDocument.defaultView;
         this.onMessage = function (e) {
-          if (self.frame && e.source === self.frame.contentWindow && e.data && e.data.type === 'limitless-cms:ready') {
-            self.send();
-          }
+          if (!self.frame || e.source !== self.frame.contentWindow || !e.data) return;
+          if (e.data.type === 'limitless-cms:ready') self.send();
+          if (e.data.type === 'limitless-cms:focus' && e.data.scope === opts.scope) focusField(e.data.path);
         };
         this.win.addEventListener('message', this.onMessage);
         this.onResize = function () {
@@ -111,7 +189,7 @@
         if (!frame || !frame.contentWindow) return;
         var data = this.props.entry.get('data');
         frame.contentWindow.postMessage(
-          { type: 'limitless-cms:update', scope: opts.scope, data: data && data.toJS ? data.toJS() : {} },
+          { type: 'limitless-cms:update', scope: opts.scope, data: data && data.toJS ? data.toJS() : {}, scale: this.state.scale },
           window.location.origin,
         );
       },
@@ -228,8 +306,8 @@
 
         var note = h(
           'p',
-          { style: { margin: '10px 16px 0', font: '12px/1.4 system-ui, sans-serif', color: '#555' } },
-          'Changes show here as you type. Visitors see them after you click Publish.',
+          { style: { margin: '10px 72px 0 16px', font: '12px/1.4 system-ui, sans-serif', color: '#555' } },
+          'Click any text in the preview to jump to it in the form. Changes show here as you type; visitors see them after you click Publish.',
         );
 
         var frame = h(
