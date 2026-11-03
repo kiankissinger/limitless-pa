@@ -12,14 +12,77 @@
     <script src="https://unpkg.com/decap-cms@3.17.1/dist/decap-cms.js"></script>
     <!-- Live preview: shows the real page as you edit (see preview.js) -->
     <script src="/admin/preview.js"></script>
-    <!-- Quick link to the Site health report (src/pages/admin/health.astro) -->
-    <a class="health-link" href="/admin/health/" target="_blank" rel="noopener">Site health ↗</a>
+    <!-- Bottom-left corner: Site health report (src/pages/admin/health.astro) and the ClientBridgeUSA credit.
+         The logo files are ClientBridgeUSA's own, unaltered (same ones as the site footer). -->
+    <div class="cms-corner">
+      <a class="health-link" href="/admin/health/" target="_blank" rel="noopener">Site health ↗</a>
+      <a class="cms-credit" href="https://clientbridgeusa.com" target="_blank" rel="noopener">
+        <span>CMS brought to you by</span>
+        <img class="cb-mark" src="/partners/clientbridgeusa/mark.svg" alt="" width="48" height="20" />
+        <img class="cb-wordmark" src="/partners/clientbridgeusa/wordmark.svg" alt="ClientBridgeUSA" width="104" height="13" />
+      </a>
+    </div>
+    <script>
+      // The credit steps aside while an entry is open, so it never covers the editor's fields.
+      (function () {
+        var credit = document.querySelector('.cms-credit');
+        function update() {
+          credit.hidden = /\/collections\/[^/]+\/(entries\/|new)/.test(location.hash);
+        }
+        window.addEventListener('hashchange', update);
+        update();
+      })();
+    </script>
     <style>
-      .health-link {
+      .cms-corner {
         position: fixed;
         left: 16px;
         bottom: 16px;
         z-index: 400;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        max-width: calc(100vw - 32px);
+        pointer-events: none;
+      }
+      .cms-corner > a {
+        pointer-events: auto;
+      }
+      .cms-credit[hidden] {
+        display: none;
+      }
+      .cms-credit {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid #e2e2e2;
+        color: #555;
+        font: 500 12px/1 system-ui, sans-serif;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+      }
+      .cms-credit span {
+        margin-right: 2px;
+      }
+      .cms-credit:hover span,
+      .cms-credit:focus-visible span {
+        text-decoration: underline;
+      }
+      .cms-credit .cb-mark {
+        display: block;
+        height: 20px;
+        width: auto;
+      }
+      .cms-credit .cb-wordmark {
+        display: block;
+        height: 13px;
+        width: auto;
+      }
+      .health-link {
         padding: 8px 14px;
         border-radius: 999px;
         background: #11404e;
