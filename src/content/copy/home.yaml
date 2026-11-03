@@ -1,10 +1,10 @@
 hero:
   eyebrow: Pennsylvania · For families of kids with special needs
   title: Find the places where your kid can just be a kid.
-  intro: >-
-    Limitless PA is a free guide to sensory-friendly businesses, inclusive events, and welcoming spaces across
-    Pennsylvania — from a barbershop with a quiet room to a movie with the lights up.
-  search_placeholder: Haircuts, movies, quiet room…
+  intro: Limitless PA is a free guide to sensory-friendly businesses, inclusive
+    events, and welcoming spaces across Pennsylvania — from a barbershop with a
+    quiet room to a movie with the lights up.
+  search_placeholder: Haircuts, movies, quiet room..
 example:
   title: Your neighborhood barbershop
   category: Haircuts & grooming
@@ -15,9 +15,8 @@ example:
     - No rush, breaks anytime
 notice:
   title: Everything that isn’t a doctor’s office.
-  text: >-
-    We’re a community group, not medical professionals. We focus on the rest of life — haircuts, birthdays, movie
-    nights, and Saturday mornings out.
+  text: We’re a community group, not medical professionals. We focus on the rest
+    of life — haircuts, birthdays, movie nights, and Saturday mornings out.
 categories:
   eyebrow: Browse by what you need
   title: Where do you want to go?
@@ -27,9 +26,9 @@ featured:
 look_for:
   eyebrow: What we look for
   title: Small changes that make a big difference
-  intro: >-
-    A business doesn’t need to be perfect to be listed. We look for real, practical accommodations that make an outing
-    easier for kids with sensory needs — and for the grown-ups with them.
+  intro: A business doesn’t need to be perfect to be listed. We look for real,
+    practical accommodations that make an outing easier for kids with sensory
+    needs — and for the grown-ups with them.
   items:
     - icon: headphones
       title: Calmer spaces
@@ -52,16 +51,16 @@ look_for:
 events:
   eyebrow: Things to do
   title: Upcoming & recurring events
-  empty: We’re gathering events now. Hosting something inclusive? [Share your event](/submit-event/).
+  empty: We’re gathering events now. Hosting something inclusive? [Share your
+    event](/submit-event/).
 cta_suggest:
   title: Know a great place?
-  text: >-
-    The best recommendations come from families. If a business made your kid feel welcome, tell us about it — we’ll
-    check it out and add it to the guide.
+  text: The best recommendations come from families. If a business made your kid
+    feel welcome, tell us about it — we’ll check it out and add it to the guide.
   button: Suggest a place
 cta_business:
   title: Own a business?
-  text: >-
-    Whether you already offer sensory-friendly options or want to start, we’d love to hear from you. Listing is free,
-    and we can share simple ideas that cost little or nothing.
+  text: Whether you already offer sensory-friendly options or want to start, we’d
+    love to hear from you. Listing is free, and we can share simple ideas that
+    cost little or nothing.
   button: For businesses
