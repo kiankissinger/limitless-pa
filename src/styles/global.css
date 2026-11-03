@@ -477,3 +477,62 @@ fieldset.field {
 .page-hero h1 {
   color: var(--brand-primary);
 }
+
+.print-only {
+  display: none;
+}
+
+/* Printing a listing gives a clean, paper-friendly page */
+@media print {
+  .print-only {
+    display: block !important;
+  }
+  .print-url {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 9pt;
+    color: var(--ink-muted);
+  }
+  @page {
+    margin: 16mm;
+  }
+  body {
+    background: #fff;
+    font-size: 11pt;
+  }
+  .skip-link,
+  .site-header nav,
+  .site-header .menu-toggle,
+  .site-footer .top > :not(.about),
+  .site-footer .newsletter,
+  .site-footer .bottom-links,
+  .back,
+  .btn,
+  .cms-edit-bar,
+  .related,
+  .past-note {
+    display: none !important;
+  }
+  .site-header {
+    position: static;
+    border: 0;
+  }
+  .page-hero,
+  .section-alt,
+  .site-footer {
+    background: #fff !important;
+  }
+  .card,
+  .notice {
+    box-shadow: none !important;
+  }
+  .detail {
+    grid-template-columns: 1fr !important;
+  }
+  .side {
+    position: static !important;
+  }
+  a {
+    color: inherit;
+  }
+}

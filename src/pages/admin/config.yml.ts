@@ -63,6 +63,8 @@ const list = (name: string, label: string, fields: Field[], extra: Field = {}): 
   name,
   label,
   widget: 'list',
+  // "1 card", not "1 cards"
+  label_singular: label.endsWith('s') ? label.slice(0, -1) : label,
   // Show every item's fields open, so editors can change what they see.
   collapsed: false,
   fields,
@@ -113,6 +115,29 @@ const accField: Field = {
 };
 const urlField = (name: string, label: string, hint?: string): Field =>
   opt(name, label, { hint, pattern: ['^https?://.+', 'Must be a full web address starting with https://'] });
+const photosField = list(
+  'photos',
+  'Photos',
+  [
+    { name: 'image', label: 'Photo', widget: 'image', choose_url: false },
+    str('alt', 'Describe the photo', {
+      hint: 'What someone would see, for people using screen readers. e.g. “Quiet room with two bean bags and soft lighting.”',
+    }),
+    opt('caption', 'Caption'),
+  ],
+  {
+    required: false,
+    summary: '{{fields.alt}}',
+    hint: 'Photos of the entrance, quiet spaces, and waiting areas help kids know what to expect.',
+  },
+);
+const notesField: Field = {
+  name: 'notes',
+  label: 'Internal notes',
+  widget: 'text',
+  required: false,
+  hint: 'For the team only — never shown on the website. Suggestions from the website forms land here.',
+};
 const hidden: Field = {
   name: 'draft',
   label: 'Hide from the website (draft)',
@@ -120,6 +145,23 @@ const hidden: Field = {
   default: false,
   required: false,
 };
+
+// ---- list filters -------------------------------------------------------
+// "Needs re-checking": a pattern matching any YYYY-MM-DD date more than six
+// months before this build. Regenerated on every publish, so it stays current.
+function staleDatePattern(months = 6) {
+  const cutoff = new Date();
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - months);
+  const y = cutoff.getUTCFullYear();
+  const m = cutoff.getUTCMonth() + 1;
+  const d = cutoff.getUTCDate();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const years = Array.from({ length: y - 2000 }, (_, i) => String(2000 + i));
+  const months_ = Array.from({ length: m - 1 }, (_, i) => `${y}-${pad(i + 1)}`);
+  const days = Array.from({ length: d - 1 }, (_, i) => `${y}-${pad(m)}-${pad(i + 1)}`);
+  const alts = [...years.map((yr) => `${yr}-`), ...months_.map((mo) => `${mo}-`), ...days];
+  return `^(${alts.join('|')})`;
+}
 
 // ---- collections ---------------------------------------------------------
 const eventsCollection = {
@@ -133,6 +175,10 @@ const eventsCollection = {
   identifier_field: 'title',
   summary: '{{title}}',
   sortable_fields: ['title', 'date'],
+  view_filters: [
+    { label: 'Recurring programs', field: 'recurring', pattern: '.+' },
+    { label: 'Hidden drafts', field: 'draft', pattern: true },
+  ],
   preview_path: 'events/{{slug}}/',
   fields: [
     str('title', 'Event name'),
@@ -150,11 +196,13 @@ const eventsCollection = {
     opt('cost', 'Cost', { hint: 'e.g. Free, $5 per child, Regular admission' }),
     opt('ages', 'Ages'),
     text('summary', 'Short description', { hint: 'One or two sentences shown on the event card.' }),
+    photosField,
     accField,
     urlField('url', 'Event link', 'Where families can find details or register.'),
     opt('registration', 'Registration notes', { hint: 'e.g. Sign up online — spots are limited.' }),
     hidden,
     blockMd('body', 'More details (optional)', { required: false }),
+    notesField,
   ],
 };
 
@@ -162,13 +210,19 @@ const placesCollection = {
   name: 'places',
   label: 'Places',
   label_singular: 'Place',
-  description: 'Sensory-friendly businesses and venues in the directory.',
+  description:
+    'Sensory-friendly businesses and venues in the directory. The Site health page (link at the bottom left) lists places that need re-checking.',
   folder: 'src/content/places',
   create: true,
   slug: '{{slug}}',
   identifier_field: 'name',
   summary: '{{name}} — {{city}}',
-  sortable_fields: ['name', 'region'],
+  sortable_fields: ['name', 'region', 'verified'],
+  view_filters: [
+    { label: 'Checked over 6 months ago', field: 'verified', pattern: staleDatePattern(6) },
+    { label: 'Featured on the home page', field: 'featured', pattern: true },
+    { label: 'Hidden drafts', field: 'draft', pattern: true },
+  ],
   preview_path: 'places/{{slug}}/',
   fields: [
     str('name', 'Name'),
@@ -182,6 +236,7 @@ const placesCollection = {
     opt('city', 'Town or city'),
     opt('address', 'Street address'),
     text('summary', 'Short description', { hint: 'One or two sentences shown on the directory card.' }),
+    photosField,
     accField,
     opt('schedule', 'When', { hint: 'e.g. Sensory hours every Tuesday, 9–11 a.m.' }),
     opt('ages', 'Ages'),
@@ -200,6 +255,7 @@ const placesCollection = {
     { name: 'featured', label: 'Feature on the home page', widget: 'boolean', default: false, required: false },
     hidden,
     blockMd('body', 'Good to know (optional)', { required: false }),
+    notesField,
   ],
 };
 
@@ -336,6 +392,7 @@ const pagesCollection = {
       str('eyebrow', 'Small label'),
       str('title', 'Heading'),
       text('intro', 'Intro'),
+      str('subscribe_text', 'Calendar subscribe text'),
       str('upcoming_title', '“Coming up” heading'),
       str('empty_title', 'No-events message (bold)'),
       inlineMd('empty_text', 'No-events message'),
@@ -400,7 +457,9 @@ const config = {
   display_url: 'https://limitlesspa.org',
   logo_url: '/brand/logo-mark.svg',
   media_folder: 'public/uploads',
-  public_folder: '/uploads',
+  // Stored as "uploads/photo.jpg" so the CMS can show thumbnails of new
+  // uploads before they're published; the site adds the leading slash.
+  public_folder: 'uploads',
   slug: { encoding: 'ascii', clean_accents: true, sanitize_replacement: '-' },
   collections: [eventsCollection, placesCollection, pagesCollection],
 };

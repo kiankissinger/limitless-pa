@@ -7,6 +7,9 @@ import { splitEvents, monthLabel, isoDay } from '../../lib/events';
 import { getCopy, mdi } from '../../lib/copy';
 
 const t = await getCopy('events-page');
+const feed = new URL('/events.ics', Astro.site);
+const webcal = `webcal://${feed.host}${feed.pathname}`;
+const googleSubscribe = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}`;
 
 const { upcoming, recurring } = splitEvents(await getCollection('events'));
 
@@ -29,6 +32,15 @@ for (const e of upcoming) {
         <span class="eyebrow" data-cms="events-page:eyebrow">{t.eyebrow}</span>
         <h1 data-cms="events-page:title">{t.title}</h1>
         <p data-cms="events-page:intro">{t.intro}</p>
+        <p class="subscribe">
+          <Icon name="calendar" size={18} />
+          <span data-cms="events-page:subscribe_text">{t.subscribe_text}</span>
+          <a href={webcal}>Apple or Outlook</a>
+          <span aria-hidden="true">·</span>
+          <a href={googleSubscribe} target="_blank" rel="noopener">Google Calendar</a>
+          <span aria-hidden="true">·</span>
+          <button type="button" class="copy-link" data-copy={feed.toString()}>Copy link</button>
+        </p>
       </div>
       <a class="btn btn-primary" href="/submit-event/"><Icon name="plus" size={18} /> Share an event</a>
     </div>
@@ -91,6 +103,28 @@ for (const e of upcoming) {
 </Base>
 
 <style>
+  .subscribe {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin-top: 18px !important;
+    font-size: 0.97rem !important;
+    color: var(--ink) !important;
+  }
+  .subscribe :global(svg) {
+    color: var(--brand-primary);
+  }
+  .copy-link {
+    font: inherit;
+    color: var(--brand-primary);
+    background: none;
+    border: 0;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    cursor: pointer;
+  }
   .hero-row {
     display: flex;
     flex-wrap: wrap;
@@ -160,6 +194,19 @@ for (const e of upcoming) {
 </style>
 
 <script>
+  // "Copy link" for the calendar feed
+  document.querySelectorAll<HTMLButtonElement>('.copy-link').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.textContent = 'Link copied';
+      } catch {
+        window.prompt('Copy this calendar link:', btn.dataset.copy ?? '');
+      }
+      setTimeout(() => (btn.textContent = 'Copy link'), 2500);
+    });
+  });
+
   // The site is rebuilt periodically; hide anything that ended since the last build.
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
   document.querySelectorAll<HTMLElement>('[data-event][data-last-day]').forEach((el) => {

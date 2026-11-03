@@ -133,8 +133,18 @@ const t = (await getCopy('forms')).suggest;
 </Base>
 
 <script>
-  if (new URLSearchParams(location.search).get('role') === 'owner') {
+  const params = new URLSearchParams(location.search);
+  if (params.get('role') === 'owner') {
     const r = document.querySelector<HTMLInputElement>('input[name="relationship"][value="Business owner or staff"]');
     if (r) r.checked = true;
+  }
+  // "Own this business? Update this listing" links pass the listing's name and town.
+  for (const [param, id] of [
+    ['business', 'business'],
+    ['city', 'city'],
+  ]) {
+    const value = params.get(param);
+    const input = document.getElementById(id) as HTMLInputElement | null;
+    if (value && input && !input.value) input.value = value;
   }
 </script>

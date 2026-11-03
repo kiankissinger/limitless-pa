@@ -57,6 +57,7 @@ const ogImage = new URL(image, Astro.site);
       <slot />
     </main>
     <Footer />
+    <p class="print-only print-url">{canonical.toString()}</p>
     <CmsHooks />
   </body>
 </html>

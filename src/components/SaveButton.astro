@@ -1,0 +1,76 @@
+---
+// Heart button that saves a place in this browser (see src/scripts/saved.ts).
+import Icon from './Icon.astro';
+
+interface Props {
+  id: string;
+  name: string;
+  variant?: 'icon' | 'text';
+}
+const { id, name, variant = 'text' } = Astro.props;
+---
+
+<button type="button" class:list={['save-btn', variant]} data-save={id} aria-pressed="false" aria-label={`Save ${name}`}>
+  <Icon name="heart" size={variant === 'icon' ? 20 : 18} />
+  {
+    variant === 'text' && (
+      <>
+        <span class="off">Save</span>
+        <span class="on">Saved</span>
+      </>
+    )
+  }
+</button>
+
+<style>
+  .save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--brand-primary);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .save-btn:hover {
+    border-color: var(--brand-primary);
+  }
+  .save-btn[aria-pressed='true'] :global(svg path) {
+    fill: currentColor;
+  }
+  .text {
+    min-height: 40px;
+    padding: 6px 14px 6px 12px;
+  }
+  .text .on,
+  .text[aria-pressed='true'] .off {
+    display: none;
+  }
+  .text[aria-pressed='true'] .on {
+    display: inline;
+  }
+  .icon {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    padding: 0;
+  }
+  @media print {
+    .save-btn {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initSaveButtons } from '../scripts/saved';
+  initSaveButtons();
+</script>

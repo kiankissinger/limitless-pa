@@ -12,5 +12,26 @@
     <script src="https://unpkg.com/decap-cms@3.17.1/dist/decap-cms.js"></script>
     <!-- Live preview: shows the real page as you edit (see preview.js) -->
     <script src="/admin/preview.js"></script>
+    <!-- Quick link to the Site health report (src/pages/admin/health.astro) -->
+    <a class="health-link" href="/admin/health/" target="_blank" rel="noopener">Site health ↗</a>
+    <style>
+      .health-link {
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        z-index: 400;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #11404e;
+        color: #fff;
+        font: 600 13px/1 system-ui, sans-serif;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
+      }
+      .health-link:hover,
+      .health-link:focus-visible {
+        text-decoration: underline;
+      }
+    </style>
   </body>
 </html>

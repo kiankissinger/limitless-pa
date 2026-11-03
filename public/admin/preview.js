@@ -184,12 +184,50 @@
         }
       },
 
+      // Photos uploaded but not yet published only exist in the editor; ask the
+      // CMS for a temporary URL so they show up in the preview right away.
+      resolveImages: function (value) {
+        var self = this;
+        if (Array.isArray(value)) return value.map(function (v) {
+          return self.resolveImages(v);
+        });
+        if (value && typeof value === 'object') {
+          var out = {};
+          Object.keys(value).forEach(function (k) {
+            var v = value[k];
+            if (k === 'image' && typeof v === 'string' && v && self.props.getAsset) {
+              // The CMS keeps uploads under their repository path (public/uploads/…);
+              // published photos are also reachable at their site path (/uploads/…).
+              var stored = v.replace(/^\/?uploads\//, 'public/uploads/');
+              var url = /^(https?:|blob:|\/)/.test(v) ? v : '/' + v;
+              try {
+                var asset = self.props.getAsset(stored);
+                var candidate = asset && asset.toString ? asset.toString() : '';
+                if (candidate && asset.path !== 'empty.svg' && candidate !== '[object Object]') url = candidate;
+              } catch (e) {
+                /* fall back to the site path */
+              }
+              out[k] = url;
+            } else {
+              out[k] = self.resolveImages(v);
+            }
+          });
+          return out;
+        }
+        return value;
+      },
+
       send: function () {
         var frame = this.frame;
         if (!frame || !frame.contentWindow) return;
         var data = this.props.entry.get('data');
         frame.contentWindow.postMessage(
-          { type: 'limitless-cms:update', scope: opts.scope, data: data && data.toJS ? data.toJS() : {}, scale: this.state.scale },
+          {
+            type: 'limitless-cms:update',
+            scope: opts.scope,
+            data: this.resolveImages(data && data.toJS ? data.toJS() : {}),
+            scale: this.state.scale,
+          },
           window.location.origin,
         );
       },

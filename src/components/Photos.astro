@@ -1,0 +1,97 @@
+---
+// Photo gallery for place and event pages. Images are uploaded through the
+// CMS (public/uploads) and resized by Netlify's image service; if that isn't
+// available (local preview), the original file is used.
+interface Photo {
+  image: string;
+  alt: string;
+  caption?: string;
+}
+interface Props {
+  photos?: Photo[];
+}
+const { photos: raw = [] } = Astro.props;
+// The CMS stores "uploads/photo.jpg"; serve it from the site root.
+const photos = raw.map((p) => ({ ...p, image: /^(https?:)?\/\//.test(p.image) || p.image.startsWith('/') ? p.image : `/${p.image}` }));
+
+const cdn = (src: string, w: number) =>
+  src.startsWith('/') ? `/.netlify/images?url=${encodeURIComponent(src)}&w=${w}&fm=webp&q=75` : src;
+const srcset = (src: string) => (src.startsWith('/') ? [400, 800, 1200].map((w) => `${cdn(src, w)} ${w}w`).join(', ') : undefined);
+// Fall back to the original file if the resized version can't load.
+const fallback = "this.onerror=null;this.removeAttribute('srcset');this.src=this.dataset.original";
+---
+
+<section class="photos" data-cms-show="entry:photos" hidden={photos.length === 0} aria-labelledby="photos-title">
+  <h2 id="photos-title">Photos</h2>
+  <ul class="grid-photos" data-cms-list="entry:photos">
+    <template data-cms-item-template>
+      <li data-cms-item>
+        <figure>
+          <img data-cms-field-src="image" data-cms-field-alt="alt" alt="" loading="lazy" decoding="async" />
+          <figcaption data-cms-field="caption"></figcaption>
+        </figure>
+      </li>
+    </template>
+    {
+      photos.map((p) => (
+        <li data-cms-item>
+          <figure>
+            <a href={p.image} target="_blank" rel="noopener" aria-label={`Open full-size photo: ${p.alt}`}>
+              <img
+                src={cdn(p.image, 800)}
+                srcset={srcset(p.image)}
+                sizes="(min-width: 900px) 360px, (min-width: 640px) 45vw, 92vw"
+                data-original={p.image}
+                onerror={fallback}
+                data-cms-field-src="image"
+                data-cms-field-alt="alt"
+                alt={p.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <figcaption data-cms-field="caption" hidden={!p.caption}>{p.caption}</figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .photos {
+    margin: 8px 0 24px;
+  }
+  .photos h2 {
+    font-size: 1.35rem;
+    color: var(--brand-primary);
+  }
+  .grid-photos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  }
+  figure {
+    margin: 0;
+  }
+  img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    background: var(--surface-alt);
+  }
+  figcaption {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+  }
+  @media print {
+    .grid-photos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

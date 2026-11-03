@@ -1,0 +1,44 @@
+# Monthly check that the websites linked from listings still work.
+# If any are broken, opens an issue in this repo listing them.
+# Can also be run by hand: Actions tab -> "Check listing links" -> Run workflow.
+name: Check listing links
+
+on:
+  schedule:
+    - cron: '17 14 1 * *' # 1st of each month, morning in Pennsylvania
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in listings and page text
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Many venue websites block automated checks (403/429) — those aren't broken.
+          args: >-
+            --no-progress
+            --max-concurrency 4
+            --timeout 30
+            --max-retries 2
+            --accept 200..=299,301,302,303,307,308,403,429
+            --exclude-path node_modules
+            'src/content/**/*.md'
+            'src/content/**/*.yaml'
+          output: ./link-report.md
+          fail: false
+
+      - name: Open an issue if links are broken
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: Broken links in listings
+          content-filepath: ./link-report.md
+          labels: maintenance

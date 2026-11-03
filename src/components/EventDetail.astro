@@ -4,6 +4,8 @@
 // src/scripts/cms-preview.ts). Optional rows are always rendered and
 // hidden when empty so the preview can reveal them as editors type.
 import Icon from './Icon.astro';
+import Photos from './Photos.astro';
+import ShareTools from './ShareTools.astro';
 import { accommodations } from '../data/taxonomy';
 import { dateLabel, timeRange, googleCalendarUrl, lastDay } from '../lib/events';
 import { mdEntry } from '../lib/markdown';
@@ -39,6 +41,8 @@ const bodyHtml = mdEntry(body.trim());
   <div class="container detail">
     <div class="main">
       <p class="summary" data-cms="entry:summary">{d.summary}</p>
+
+      <Photos photos={d.photos} />
 
       <div class="prose" data-cms-md-entry="entry:body" data-cms-show="entry:body" hidden={!bodyHtml} set:html={bodyHtml} />
 
@@ -139,6 +143,8 @@ const bodyHtml = mdEntry(body.trim());
             <Icon name="calendar" size={18} /> Download .ics
           </a>
         </span>
+        <ShareTools title={d.title ?? 'Event'} />
+        {d.url && <p class="print-only">More info: {d.url}</p>}
       </div>
     </aside>
   </div>

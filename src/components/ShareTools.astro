@@ -1,0 +1,76 @@
+---
+// Share (phone share sheet, or copy link) and Print buttons for listing pages.
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<div class="share-tools">
+  <button type="button" class="tool" data-share={title}>
+    <Icon name="share" size={18} /> <span class="label">Share</span>
+  </button>
+  <button type="button" class="tool" data-print>
+    <Icon name="printer" size={18} /> Print
+  </button>
+</div>
+
+<style>
+  .share-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 6px 14px 6px 12px;
+    font: inherit;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--brand-primary);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .tool:hover {
+    border-color: var(--brand-primary);
+  }
+  @media print {
+    .share-tools {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('click', async (e) => {
+    const share = (e.target as Element).closest<HTMLButtonElement>('[data-share]');
+    if (share) {
+      const data = { title: share.dataset.share, url: location.href.split('?')[0] };
+      if (navigator.share) {
+        try {
+          await navigator.share(data);
+        } catch {
+          /* cancelled */
+        }
+        return;
+      }
+      const label = share.querySelector('.label')!;
+      try {
+        await navigator.clipboard.writeText(data.url);
+        label.textContent = 'Link copied';
+      } catch {
+        window.prompt('Copy this link:', data.url);
+      }
+      setTimeout(() => (label.textContent = 'Share'), 2500);
+      return;
+    }
+    if ((e.target as Element).closest('[data-print]')) window.print();
+  });
+</script>

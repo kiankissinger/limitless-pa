@@ -164,6 +164,39 @@ with `data-cms-*` attributes. When adding editable text to a page, add the match
 The footer signup saves emails to the Netlify form named `newsletter` (Netlify → Forms). Export them as a CSV
 any time and import them into an email tool (Mailchimp, Buttondown, etc.) when you're ready to send updates.
 
+## Features for families
+
+- **Saved places** — the heart on every place card and listing saves it in the visitor's own browser
+  (nothing is sent anywhere). "My saved places" on the Find places page shows just those.
+- **Share & print** — listing pages have Share (phone share sheet, or copy link) and Print. Printing gives a
+  clean page with the logo, details, website, and the page address.
+- **Calendar subscription** — `https://limitlesspa.org/events.ics` lists every dated event. The Events page
+  links to it for Apple/Outlook, Google Calendar, and "copy link"; subscribers get new events automatically.
+- **Photos** — places and events can have photos (with a required description for screen readers). Netlify
+  resizes them automatically for phones.
+- **"Own this business? Update this listing"** — opens the suggestion form already filled in for the owner.
+
+## Keeping the guide up to date
+
+- **Site health** (`/admin/health/`, also linked at the bottom left of the CMS) lists places not checked in
+  6+ months, listings missing details or photos, events coming up in the next 30 days, past events to tidy up,
+  empty categories, and hidden drafts — each with an Edit link.
+- **CMS filters** — Places can be filtered by "Checked over 6 months ago", "Featured", or "Hidden drafts", and
+  sorted by when they were last checked.
+- **Monthly link check** — a GitHub Action (`.github/workflows/link-check.yml`) checks every website link in
+  the listings on the 1st of each month and opens a GitHub issue if any are broken. Run it any time from the
+  repo's **Actions** tab.
+
+### Optional automations (off until switched on)
+
+Both are already built and deployed; each needs one value added in Netlify under **Project configuration →
+Environment variables** (scope: **Functions**), then a redeploy.
+
+| Automation | What it does | Variable to add |
+| --- | --- | --- |
+| Suggestions → drafts (`netlify/functions/suggestion-drafts.mts`) | Every "Suggest a place" or "Share an event" submission appears in the CMS as a hidden draft, with the family's note in **Internal notes**. Review, write the short description, untick "Hide from the website", publish. | `GITHUB_TOKEN` — a fine-grained GitHub token for `kiankissinger/limitless-pa` only, with **Contents: Read and write** |
+| Nightly refresh (`netlify/functions/nightly-rebuild.mts`) | Rebuilds the site at about 4 AM Eastern so past events drop off and Site health stays current on days with no edits. | `BUILD_HOOK_URL` — create one under **Project configuration → Build & deploy → Build hooks** |
+
 ## Forms (Netlify Forms)
 
 Four forms are detected automatically when the site deploys:

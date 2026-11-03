@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Icon from './Icon.astro';
+import SaveButton from './SaveButton.astro';
 import { categoryById, type CategoryId } from '../data/taxonomy';
 
 interface Props {
@@ -20,7 +21,9 @@ const searchText = [d.name, d.city, d.region, d.summary, cat?.label, ...d.accomm
   data-region={d.region}
   data-accommodations={JSON.stringify(d.accommodations)}
   data-search={searchText}
+  data-id={place.id}
 >
+  <SaveButton id={place.id} name={d.name} variant="icon" />
   <div class="cat">
     <span class="cat-icon"><Icon name={cat.icon as any} size={18} /></span>
     {cat.label}
@@ -59,6 +62,7 @@ const searchText = [d.name, d.city, d.region, d.summary, cat?.label, ...d.accomm
     box-shadow: var(--shadow-lift);
   }
   .cat {
+    padding-right: 44px;
     display: inline-flex;
     align-items: center;
     gap: 8px;

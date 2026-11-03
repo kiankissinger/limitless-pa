@@ -19,7 +19,7 @@ const related = all.filter((p) => p.id !== place.id && p.data.category === d.cat
 ---
 
 <Base title={d.name} description={d.summary}>
-  <PlaceDetail data={d} body={place.body ?? ''} />
+  <PlaceDetail data={d} id={place.id} body={place.body ?? ''} />
 
   {
     related.length > 0 && (

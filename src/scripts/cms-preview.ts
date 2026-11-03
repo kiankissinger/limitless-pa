@@ -87,6 +87,11 @@ function fillItem(node: Element, item: any, index: number) {
     el.textContent = v == null ? '' : String(v);
   });
   within('[data-cms-field-icon]').forEach((el) => (el.innerHTML = icon(get(item, el.getAttribute('data-cms-field-icon')!))));
+  within('[data-cms-field-src]').forEach((el) => {
+    el.setAttribute('src', get(item, el.getAttribute('data-cms-field-src')!) || '');
+    el.removeAttribute('srcset');
+  });
+  within('[data-cms-field-alt]').forEach((el) => el.setAttribute('alt', get(item, el.getAttribute('data-cms-field-alt')!) || ''));
   within('[data-cms-field-index]').forEach((el) => (el.textContent = String(index + 1)));
   within('[data-cms-field-href]').forEach((el) => {
     const v = get(item, el.getAttribute('data-cms-field-href')!);

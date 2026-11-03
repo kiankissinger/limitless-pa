@@ -18,6 +18,18 @@ const optTime = z.preprocess(
     .optional(),
 );
 const tags = z.preprocess((v) => (v == null ? [] : v), z.array(z.string()).default([]));
+const photos = z.preprocess(
+  (v) => (v == null ? [] : v),
+  z
+    .array(
+      z.object({
+        image: z.string(),
+        alt: z.string().min(1, 'Every photo needs a short description for screen readers.'),
+        caption: optText,
+      }),
+    )
+    .default([]),
+);
 const flag = z.preprocess((v) => (v == null || v === '' ? false : v), z.boolean().default(false));
 
 // One Markdown file per place in src/content/places/.
@@ -31,6 +43,7 @@ const places = defineCollection({
     city: optText,
     address: optText,
     summary: z.string(),
+    photos,
     accommodations: tags,
     ages: optText,
     cost: optText,
@@ -44,6 +57,8 @@ const places = defineCollection({
     multiLocation: flag,
     featured: flag,
     draft: flag,
+    // Internal notes for the team; never shown on the site.
+    notes: optText,
   }),
 });
 
@@ -68,10 +83,13 @@ const events = defineCollection({
       cost: optText,
       ages: optText,
       summary: z.string(),
+      photos,
       accommodations: tags,
       url: optUrl,
       registration: optText,
       draft: flag,
+      // Internal notes for the team; never shown on the site.
+      notes: optText,
     })
     .refine((e) => e.date || e.recurring, {
       message: 'Each event needs either a `date` or a `recurring` description.',

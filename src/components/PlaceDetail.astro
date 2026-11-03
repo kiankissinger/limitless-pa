@@ -4,15 +4,19 @@
 // src/scripts/cms-preview.ts). Optional rows are always rendered and
 // hidden when empty so the preview can reveal them as editors type.
 import Icon from './Icon.astro';
+import Photos from './Photos.astro';
+import SaveButton from './SaveButton.astro';
+import ShareTools from './ShareTools.astro';
 import { accommodations, categoryById, type CategoryId } from '../data/taxonomy';
 import { mdEntry } from '../lib/markdown';
 
 interface Props {
   data: Record<string, any>;
+  id?: string;
   body?: string;
 }
 
-const { data: d, body = '' } = Astro.props;
+const { data: d, id = '', body = '' } = Astro.props;
 const cat = categoryById[d.category as CategoryId] ?? categoryById['community'];
 const accs: string[] = d.accommodations ?? [];
 const bodyHtml = mdEntry(body.trim());
@@ -22,6 +26,7 @@ const verified = d.verified
   ? new Date(d.verified).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
   : '';
 const where = d.multiLocation ? 'Multiple locations across Pennsylvania' : [d.city, d.region].filter(Boolean).join(' · ');
+const ownerUrl = `/suggest/?${new URLSearchParams({ role: 'owner', business: d.name ?? '', city: d.city ?? '' })}`;
 const tel = d.phone ? `tel:${String(d.phone).replace(/[^\d+]/g, '')}` : '';
 ---
 
@@ -41,6 +46,8 @@ const tel = d.phone ? `tel:${String(d.phone).replace(/[^\d+]/g, '')}` : '';
   <div class="container detail">
     <div class="main">
       <p class="summary" data-cms="entry:summary">{d.summary}</p>
+
+      <Photos photos={d.photos} />
 
       <div data-cms-show="entry:accommodations" hidden={accs.length === 0}>
         <h2>Accommodations</h2>
@@ -149,6 +156,13 @@ const tel = d.phone ? `tel:${String(d.phone).replace(/[^\d+]/g, '')}` : '';
           hidden={!d.source}>Source</a
         >
       </p>
+      {d.website && <p class="print-only">Website: {d.website}</p>}
+      {d.phone && <p class="print-only">Phone: {d.phone}</p>}
+      <div class="tools">
+        {id && <SaveButton id={id} name={d.name} />}
+        <ShareTools title={d.name} />
+      </div>
+      <p class="owner"><a href={ownerUrl}>Own this business? Update this listing</a></p>
     </aside>
   </div>
 </section>
@@ -282,5 +296,23 @@ const tel = d.phone ? `tel:${String(d.phone).replace(/[^\d+]/g, '')}` : '';
     margin: 14px 0 0;
     font-size: 0.88rem;
     color: var(--ink-muted);
+  }
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .owner {
+    margin: 14px 0 0;
+    font-size: 0.92rem;
+  }
+  @media print {
+    .owner,
+    .tools {
+      display: none;
+    }
   }
 </style>

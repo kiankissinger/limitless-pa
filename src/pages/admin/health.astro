@@ -1,0 +1,339 @@
+---
+// Site health: a to-do list for the people running the site.
+// Rebuilt every time the site updates. Not linked publicly; hidden from search.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { categories } from '../../data/taxonomy';
+import { dateLabel, isoDay, lastDay, todayInPA } from '../../lib/events';
+
+const STALE_MONTHS = 6;
+const places = await getCollection('places');
+const events = await getCollection('events');
+const today = todayInPA();
+const builtAt = new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/New_York' });
+
+const cutoff = new Date(`${today}T00:00:00Z`);
+cutoff.setUTCMonth(cutoff.getUTCMonth() - STALE_MONTHS);
+const fmtMonth = (d?: Date) => (d ? d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' }) : 'Never');
+const edit = (collection: string, id: string) => `/admin/#/collections/${collection}/entries/${id}`;
+
+const livePlaces = places.filter((p) => !p.data.draft);
+const recheck = livePlaces
+  .filter((p) => !p.data.verified || p.data.verified < cutoff)
+  .sort((a, b) => (a.data.verified?.getTime() ?? 0) - (b.data.verified?.getTime() ?? 0));
+
+const missing = livePlaces
+  .map((p) => {
+    const gaps = [
+      !p.data.website && 'website',
+      !p.data.address && !p.data.multiLocation && 'address',
+      p.data.accommodations.length === 0 && 'accommodations',
+      p.data.photos.length === 0 && 'photos',
+    ].filter(Boolean) as string[];
+    return { p, gaps };
+  })
+  .filter((x) => x.gaps.length > 0)
+  .sort((a, b) => b.gaps.length - a.gaps.length || a.p.data.name.localeCompare(b.p.data.name));
+
+const liveEvents = events.filter((e) => !e.data.draft);
+const pastEvents = liveEvents.filter((e) => e.data.date && lastDay(e.data) < today);
+const soonLimit = new Date(`${today}T00:00:00Z`);
+soonLimit.setUTCDate(soonLimit.getUTCDate() + 30);
+const comingUp = liveEvents
+  .filter((e) => e.data.date && lastDay(e.data) >= today && e.data.date <= soonLimit)
+  .sort((a, b) => a.data.date!.getTime() - b.data.date!.getTime());
+const recurring = liveEvents.filter((e) => !e.data.date);
+const drafts = [
+  ...places.filter((p) => p.data.draft).map((p) => ({ kind: 'places', id: p.id, title: p.data.name })),
+  ...events.filter((e) => e.data.draft).map((e) => ({ kind: 'events', id: e.id, title: e.data.title })),
+];
+const emptyCategories = categories.filter((c) => !livePlaces.some((p) => p.data.category === c.id));
+
+const stats = [
+  { label: 'Places listed', value: livePlaces.length },
+  { label: 'Events in the next 30 days', value: comingUp.length },
+  { label: 'Recurring programs', value: recurring.length },
+  { label: 'Need re-checking', value: recheck.length },
+];
+---
+
+<Base title="Site health" noindex>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">For the Limitless PA team</span>
+      <h1>Site health</h1>
+      <p>A to-do list for keeping the guide accurate. Updated {builtAt}, the last time the site was published.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <ul class="stats">
+        {
+          stats.map((s) => (
+            <li class="card">
+              <span class="num">{s.value}</span>
+              <span>{s.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="block">
+        <h2><Icon name="clock" size={22} /> Places to re-check</h2>
+        <p class="hint">
+          Not confirmed in the last {STALE_MONTHS} months. Call or check their website, update anything that changed, and set
+          “Details last checked” to today.
+        </p>
+        {
+          recheck.length ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Place</th>
+                  <th>Last checked</th>
+                  <th>
+                    <span class="visually-hidden">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {recheck.map((p) => (
+                  <tr>
+                    <td>{p.data.name}</td>
+                    <td>{fmtMonth(p.data.verified)}</td>
+                    <td class="actions">
+                      <a href={edit('places', p.id)}>Edit</a> · <a href={`/places/${p.id}/`}>View</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p class="ok">
+              <Icon name="check" size={18} /> Everything has been checked recently.
+            </p>
+          )
+        }
+      </div>
+
+      <div class="block">
+        <h2><Icon name="calendar" size={22} /> Coming up in the next 30 days</h2>
+        {
+          comingUp.length ? (
+            <ul class="plain">
+              {comingUp.map((e) => (
+                <li>
+                  <strong>{dateLabel(e.data)}</strong> — {e.data.title}
+                  <span class="actions">
+                    <a href={edit('events', e.id)}>Edit</a> · <a href={`/events/${e.id}/`}>View</a>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="hint">
+              No one-time events in the next 30 days. <a href="/admin/#/collections/events/new">Add an event</a>.
+            </p>
+          )
+        }
+      </div>
+
+      {
+        pastEvents.length > 0 && (
+          <div class="block">
+            <h2>
+              <Icon name="repeat" size={22} /> Past events to tidy up
+            </h2>
+            <p class="hint">
+              These already happened and are hidden from the Events page. You can delete them in the editor, or leave them —
+              their pages say the event is over.
+            </p>
+            <ul class="plain">
+              {pastEvents.map((e) => (
+                <li>
+                  <strong>{isoDay(e.data.date!)}</strong> — {e.data.title}
+                  <span class="actions">
+                    <a href={edit('events', e.id)}>Edit</a>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <div class="block">
+        <h2><Icon name="sparkle" size={22} /> Listings that could use more detail</h2>
+        <p class="hint">Photos and full details help families decide before they go.</p>
+        {
+          missing.length ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Place</th>
+                  <th>Missing</th>
+                  <th>
+                    <span class="visually-hidden">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {missing.map(({ p, gaps }) => (
+                  <tr>
+                    <td>{p.data.name}</td>
+                    <td>{gaps.join(', ')}</td>
+                    <td class="actions">
+                      <a href={edit('places', p.id)}>Edit</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p class="ok">
+              <Icon name="check" size={18} /> Every listing has full details.
+            </p>
+          )
+        }
+      </div>
+
+      {
+        emptyCategories.length > 0 && (
+          <div class="block">
+            <h2>
+              <Icon name="search" size={22} /> Categories with no places yet
+            </h2>
+            <p class="hint">Good places to ask families for suggestions.</p>
+            <ul class="tag-list">
+              {emptyCategories.map((c) => (
+                <li class="tag">{c.label}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <div class="block">
+        <h2><Icon name="info" size={22} /> Hidden drafts</h2>
+        {
+          drafts.length ? (
+            <ul class="plain">
+              {drafts.map((d) => (
+                <li>
+                  {d.title} <span class="muted">({d.kind === 'places' ? 'place' : 'event'})</span>
+                  <span class="actions">
+                    <a href={edit(d.kind, d.id)}>Edit</a>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="hint">No drafts right now.</p>
+          )
+        }
+      </div>
+
+      <p class="back-link"><a href="/admin/">← Back to the content manager</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .stats {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  }
+  .stats li {
+    padding: 18px 20px;
+    display: grid;
+    gap: 2px;
+    box-shadow: none;
+  }
+  .num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--brand-primary);
+  }
+  .block {
+    margin-bottom: 36px;
+  }
+  .block h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    color: var(--brand-primary);
+  }
+  .hint {
+    color: var(--ink-muted);
+    max-width: 70ch;
+  }
+  .ok {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  table {
+    width: 100%;
+    table-layout: fixed;
+    overflow-wrap: anywhere;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    background: var(--surface-alt);
+  }
+  tr:last-child td {
+    border-bottom: 0;
+  }
+  .actions {
+    white-space: nowrap;
+  }
+  th:last-child,
+  td.actions {
+    width: 8.5em;
+  }
+  .plain {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .plain .actions {
+    margin-left: 10px;
+  }
+  .muted {
+    color: var(--ink-muted);
+  }
+  .back-link {
+    margin-top: 12px;
+  }
+  @media (max-width: 640px) {
+    th:nth-child(2),
+    td:nth-child(2) {
+      font-size: 0.9rem;
+    }
+  }
+</style>

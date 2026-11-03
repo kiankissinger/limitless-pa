@@ -86,18 +86,53 @@ export function googleCalendarUrl(e: Event['data'], pageUrl: string) {
 
 const icsEscape = (s: string) => s.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([,;])/g, '\\$1');
 
-export function icsFile(e: Event, pageUrl: string) {
+// Pennsylvania time zone, so calendar apps place times correctly.
+const VTIMEZONE = [
+  'BEGIN:VTIMEZONE',
+  'TZID:America/New_York',
+  'BEGIN:DAYLIGHT',
+  'TZOFFSETFROM:-0500',
+  'TZOFFSETTO:-0400',
+  'TZNAME:EDT',
+  'DTSTART:19700308T020000',
+  'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU',
+  'END:DAYLIGHT',
+  'BEGIN:STANDARD',
+  'TZOFFSETFROM:-0400',
+  'TZOFFSETTO:-0500',
+  'TZNAME:EST',
+  'DTSTART:19701101T020000',
+  'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU',
+  'END:STANDARD',
+  'END:VTIMEZONE',
+];
+
+/** Fold long lines at 75 bytes, as the iCalendar format requires. */
+function fold(line: string) {
+  const enc = new TextEncoder();
+  if (enc.encode(line).length <= 75) return line;
+  const out: string[] = [];
+  let cur = '';
+  for (const ch of line) {
+    const limit = out.length === 0 ? 75 : 74; // continuation lines start with a space
+    if (enc.encode(cur + ch).length > limit) {
+      out.push(cur);
+      cur = '';
+    }
+    cur += ch;
+  }
+  out.push(cur);
+  return out.join('\r\n ');
+}
+
+function vevent(e: Event, pageUrl: string, stamp: string) {
   const d = e.data;
-  if (!d.date) return '';
+  if (!d.date) return [];
   const end = d.endDate ?? d.date;
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Limitless PA//Events//EN',
-    'CALSCALE:GREGORIAN',
+  return [
     'BEGIN:VEVENT',
     `UID:${e.id}@limitlesspa.org`,
-    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`,
+    `DTSTAMP:${stamp}`,
     d.startTime ? `DTSTART;TZID=America/New_York:${compact(d.date, d.startTime)}` : `DTSTART;VALUE=DATE:${compact(d.date)}`,
     d.startTime
       ? `DTEND;TZID=America/New_York:${compact(end, d.endTime ?? d.startTime)}`
@@ -107,7 +142,44 @@ export function icsFile(e: Event, pageUrl: string) {
     d.location || d.city ? `LOCATION:${icsEscape([d.location, d.city].filter(Boolean).join(', '))}` : '',
     `URL:${pageUrl}`,
     'END:VEVENT',
-    'END:VCALENDAR',
   ].filter(Boolean);
-  return lines.join('\r\n') + '\r\n';
+}
+
+function calendar(name: string, events: string[][]) {
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Limitless PA//Events//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    `X-WR-CALNAME:${icsEscape(name)}`,
+    'X-WR-TIMEZONE:America/New_York',
+    // Ask calendar apps to check for new events every 12 hours.
+    'REFRESH-INTERVAL;VALUE=DURATION:PT12H',
+    'X-PUBLISHED-TTL:PT12H',
+    ...VTIMEZONE,
+    ...events.flat(),
+    'END:VCALENDAR',
+  ];
+  return lines.map(fold).join('\r\n') + '\r\n';
+}
+
+const stampNow = () => `${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`;
+
+/** A single event, for the "Download .ics" button. */
+export function icsFile(e: Event, pageUrl: string) {
+  if (!e.data.date) return '';
+  return calendar(e.data.title, [vevent(e, pageUrl, stampNow())]);
+}
+
+/** Every dated event (recent and upcoming), for calendar subscriptions. */
+export function icsFeed(all: Event[], site: URL) {
+  const cutoff = new Date();
+  cutoff.setUTCDate(cutoff.getUTCDate() - 90); // keep recent past events so they don't vanish oddly
+  const stamp = stampNow();
+  const events = all
+    .filter((e) => !e.data.draft && e.data.date && (e.data.endDate ?? e.data.date)! >= cutoff)
+    .sort((a, b) => a.data.date!.getTime() - b.data.date!.getTime())
+    .map((e) => vevent(e, new URL(`/events/${e.id}/`, site).toString(), stamp));
+  return calendar('Limitless PA events', events);
 }

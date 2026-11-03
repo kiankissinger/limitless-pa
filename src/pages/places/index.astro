@@ -43,6 +43,11 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
             <input id="f-q" name="q" type="search" placeholder="Name, town, or keyword" autocomplete="off" />
           </div>
 
+          <label class="acc saved-toggle" hidden>
+            <input type="checkbox" name="saved" value="1" />
+            <span><Icon name="heart" size={16} /> <span>My saved places (<span class="saved-count">0</span>)</span></span>
+          </label>
+
           <button type="button" class="more-toggle" aria-expanded="true" aria-controls="more-filters">
             <Icon name="sliders" size={18} /> <span>More filters</span> <span class="active-count"></span>
           </button>
@@ -207,6 +212,15 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
     flex-wrap: wrap;
     gap: 8px;
   }
+  .saved-toggle span {
+    gap: 6px;
+  }
+  .saved-toggle input:checked + span :global(svg path) {
+    fill: currentColor;
+  }
+  .saved-toggle input:checked + span::before {
+    content: none !important;
+  }
   .acc {
     position: relative;
     cursor: pointer;
@@ -218,7 +232,7 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
     inset: 0;
     cursor: pointer;
   }
-  .acc span {
+  .acc > span {
     display: inline-flex;
     align-items: center;
     min-height: 38px;
@@ -310,8 +324,30 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
     const accParams = params.getAll('acc');
     accBoxes.forEach((b) => (b.checked = accParams.includes(b.value)));
 
+    const savedBox = form.querySelector<HTMLInputElement>('input[name="saved"]')!;
+    const savedToggle = form.querySelector<HTMLElement>('.saved-toggle')!;
+    const savedIds = () => {
+      try {
+        return JSON.parse(localStorage.getItem('limitless-saved-places') ?? '[]') as string[];
+      } catch {
+        return [] as string[];
+      }
+    };
+    const updateSavedToggle = () => {
+      const n = savedIds().length;
+      savedToggle.querySelector('.saved-count')!.textContent = String(n);
+      savedToggle.hidden = n === 0 && !savedBox.checked;
+    };
+    savedBox.checked = params.get('saved') === '1';
+    updateSavedToggle();
+    document.addEventListener('saved-change', () => {
+      updateSavedToggle();
+      if (savedBox.checked) apply();
+    });
+
     const apply = () => {
       const terms = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const onlySaved = savedBox.checked ? new Set(savedIds()) : null;
       const cat = category.value;
       const reg = region.value;
       const accs = accBoxes.filter((b) => b.checked).map((b) => b.value);
@@ -324,7 +360,8 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
           terms.every((t) => text.includes(t)) &&
           (!cat || card.dataset.category === cat) &&
           (!reg || card.dataset.region === reg || card.dataset.region === 'Statewide') &&
-          accs.every((a) => cardAcc.includes(a));
+          accs.every((a) => cardAcc.includes(a)) &&
+          (!onlySaved || onlySaved.has(card.dataset.id ?? ''));
         card.hidden = !ok;
         if (ok) shown++;
       }
@@ -337,6 +374,7 @@ const accFilters = accommodations.filter((a) => used.has(a.id));
       if (cat) next.set('category', cat);
       if (reg) next.set('region', reg);
       accs.forEach((a) => next.append('acc', a));
+      if (savedBox.checked) next.set('saved', '1');
       const qs = next.toString();
       history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
     };
