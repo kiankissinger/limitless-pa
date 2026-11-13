@@ -1,51 +1,61 @@
 eyebrow: For businesses
 title: Welcome every kid — and every family who comes with them.
-intro: >-
-  Families of kids with special needs are loyal customers when they find a place that works. Listing with Limitless PA
-  is free, and becoming sensory-friendly is easier than you might think.
+intro: Families of kids with special needs are loyal customers when they find a
+  place that works. Listing with Limitless PA is free, and becoming
+  sensory-friendly is easier than you might think.
 stat_number: 1 in 31
-stat_text: >-
-  U.S. children are identified with autism, according to the
-  [CDC](https://www.cdc.gov/autism/data-research/index.html). Many more kids
-  have sensory sensitivities. Their families are in your community right now.
+stat_text: U.S. children are identified with autism, according to the CDC. Many
+  more kids have sensory sensitivities. Their families are in your community
+  right now.
 why_title: Why it matters
-why_body: |-
-  For many families, everyday errands take a lot of planning. When a parent isn’t sure a place will be patient with
-  their child, they often just don’t go. A few small changes — and letting families know about them — can turn
+why_body: For many families, everyday errands take a lot of planning. When a
+  parent isn’t sure a place will be patient with their child, they often just
+  don’t go. A few small changes, and letting families know about them, can turn
   your business into the place they come back to again and again.
 ideas_eyebrow: Simple ideas
 ideas_title: Small changes, mostly free
-ideas_intro: You don’t need to do all of these. Pick one or two that fit your business and start there.
+ideas_intro: You don’t need to do all of these. Pick one or two that fit your
+  business and start there.
 ideas:
   - icon: clock
-    title: Offer a quiet hour
-    text: Pick a slow time each week or month. Lower the lights, turn the music off, and skip the announcements.
+    title: Offer quiet times
+    text: Choose a time when it’s usually less busy. If you can, lower the music,
+      soften the lights, or limit announcements.
   - icon: calendar
-    title: Let families book ahead
-    text: Offer the first or last appointment of the day, when it’s calm and nobody is waiting.
+    title: Make visits easier to plan
+    text: Let families book ahead, ask questions before they arrive or schedule a
+      walkthrough. A little extra time and flexibility can make planning feel
+      easier.
   - icon: headphones
-    title: Keep a small comfort kit
-    text: A couple of pairs of noise-reducing headphones and some fidgets go a long way.
+    title: Keep a few comfort items handy
+    text: Noise-reducing headphones, simple fidget items or a weighted throw to
+      borrow may help some guests feel more comfortable.
   - icon: sparkle
-    title: Show what to expect
-    text: Post a few photos of your entrance, waiting area, and process online so kids can preview the visit.
+    title: Help families know what to expect
+    text: Share photos of your entrance, waiting area, or what happens during a
+      visit.
   - icon: heart
-    title: Brief your team
-    text: Be patient, give extra time, explain before touching, and don’t take a meltdown personally. That’s most of it.
+    title: Empower your team
+    text: A conversation about welcoming different needs can help staff respond with
+      patience, flexibility, and respect.
   - icon: people
-    title: Make a calm corner
-    text: Even a chair away from the noise gives a kid somewhere to reset before trying again.
+    title: Offer a place to pause
+    text: A chair or quieter corner away from the activity can give someone space to
+      take a break and return when they’re ready.
 steps_eyebrow: Getting listed
 steps_title: How it works
 steps:
   - title: Tell us what you offer.
     text: Fill out a short form about your business and accommodations.
   - title: We follow up.
-    text: We’ll confirm the details with you, and can share ideas if you’re just getting started.
+    text: We’ll confirm the details with you, and can share ideas if you’re just
+      getting started.
   - title: You’re listed — free.
-    text: Families can find you by town, type of business, and the accommodations you offer.
+    text: Families can find you by town, type of business, and the accommodations
+      you offer.
   - title: Share your events.
-    text: Hosting a sensory-friendly hour or special event? We’ll help spread the word.
+    text: Hosting a sensory-friendly hour or special event? We’ll help spread the
+      word.
 cta_title: Ready to be listed?
 cta_text: It takes about five minutes.
 cta_note: Questions first? [Contact us](/contact/).
