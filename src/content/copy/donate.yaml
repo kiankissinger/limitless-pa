@@ -1,13 +1,16 @@
 title: Donations coming soon
-lead: We’re setting up a simple, secure way to support Limitless PA. Thank you for thinking of us. It means a lot.
-# When Limitless PA has a donation page (PayPal, Givebutter, etc.), paste its
-# link here. A button appears and the page becomes visible to search engines.
-donation_link: ''
+lead: Thank you for thinking of Limitless and for wanting to support our work.
+  We’re preparing a way to accept donations. When it’s ready, contributions will
+  help cover website costs and printed materials that connect families with
+  welcoming places and opportunities.
+donation_link: ""
 donation_button: Donate
 ways_title: Ways to help right now
-ways: |-
-  - [Suggest a place](/suggest/) that made your family feel welcome
-  - [Share an event](/submit-event/) families would enjoy
-  - [Tell a local business](/for-businesses/) about becoming sensory-friendly
-  - [Volunteer](/contact/?topic=volunteer) with us
-notify: Want to know when donations open? [Let us know](/contact/?topic=donate) and we’ll reach out.
+ways: >-
+  * [Suggest a place](/suggest/) that made your family feel welcome
+
+  * [Share an event](/submit-event/) families would enjoy
+
+  * [Tell a local business](/for-businesses/) about becoming sensory-friendly and send them our way!
+notify: Want to know when donations open? [Let us know](/contact/?topic=donate)
+  and we’ll reach out.
