@@ -1,22 +1,23 @@
 suggest:
   eyebrow: Suggest a place
-  title: Know somewhere that gets it?
-  intro: >-
-    Tell us about a business that made your family feel welcome — or, if it’s your business, tell us what you offer. We
-    review every suggestion before it’s listed.
+  title: Know a place that made your family feel welcome?
+  intro: Tell us about it. Families, educators, and local businesses can suggest a
+    place and share what families may want to know before visiting. We’ll check
+    the details with the business before adding it to the guide.
   next_title: What happens next
   next_body: |-
     1. We read every suggestion.
-    2. We confirm details with the business.
-    3. We add it to the guide — usually within a couple of weeks.
+    2. We connect with the business to confirm the details.
+    3. Once confirmed, we invite the business to our network.
   owner_title: Business owner?
-  owner_body: Listing is free. See [simple ideas for becoming sensory-friendly](/for-businesses/).
+  owner_body: Listing is free. See [simple ideas for becoming
+    sensory-friendly](/for-businesses/).
 event:
   eyebrow: Share an event
   title: Tell families what’s happening
-  intro: >-
-    Sensory-friendly hours, adaptive sports, inclusive story times, meetups — if families of kids with special needs would
-    feel welcome, we’d love to post it. It’s free.
+  intro: Sensory-friendly hours, adaptive sports, inclusive story times, meetups —
+    if families of kids with special needs would feel welcome, we’d love to post
+    it. It’s free.
   guidelines_title: A few guidelines
   guidelines_body: |-
     - Events should welcome kids with special needs and their families.
@@ -25,14 +26,17 @@ event:
 contact:
   eyebrow: Contact
   title: Say hello
-  intro: Questions, corrections, partnership ideas, or just want to help? We’d love to hear from you.
+  intro: Questions, corrections, partnership ideas, or just want to help? We’d
+    love to hear from you.
   note_title: Please note
-  note_body: >-
-    We’re a community resource, not medical providers, and we can’t give medical, therapy, or legal advice. In an
-    emergency call [911](tel:911); for crisis support call or text [988](tel:988).
+  note_body: We’re a community resource, not medical providers, and we can’t give
+    medical, therapy, or legal advice. In an emergency call [911](tel:911); for
+    crisis support call or text [988](tel:988).
 thank_you:
   title: Thank you!
-  text: We got it. A real person will read your note, and we’ll reach out if we have any questions.
+  text: We got it. A real person will read your note, and we’ll reach out if we
+    have any questions.
 subscribed:
   title: You’re on the list
-  text: Thanks for signing up. We’ll send occasional updates about new places and events.
+  text: Thanks for signing up. We’ll send occasional updates about new places and
+    events.
