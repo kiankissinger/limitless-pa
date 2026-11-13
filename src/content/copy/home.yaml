@@ -1,13 +1,13 @@
 hero:
-  eyebrow: Pennsylvania · For families of kids with special needs
-  title: Find the places where your kid can just be a kid.
-  intro: Limitless PA is a free guide to sensory-friendly businesses, inclusive
-    events, and welcoming spaces across Pennsylvania — from a barbershop with a
-    quiet room to a movie with the lights up.
-  search_placeholder: Haircuts, movies, quiet room..
+  eyebrow: DEDICATED TO INCLUSION
+  title: Building a community that feels Limitless.
+  intro: Limitless PA is a free guide that connects individuals with disabilities
+    and their families to local activities, resources, and businesses committed
+    to inclusion.
+  search_placeholder: Activities, sensory friendly spaces and events
 example:
-  title: Your neighborhood barbershop
-  category: Haircuts & grooming
+  title: What a welcoming space can look like.
+  category: Hair Salon/Barber Shop
   items:
     - Quiet room in the back
     - First appointment of the day
