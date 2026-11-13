@@ -194,7 +194,7 @@ Environment variables** (scope: **Functions**), then a redeploy.
 
 | Automation | What it does | Variable to add |
 | --- | --- | --- |
-| Suggestions → drafts (`netlify/functions/suggestion-drafts.mts`) | Every "Suggest a place" or "Share an event" submission appears in the CMS as a hidden draft, with the family's note in **Internal notes**. Review, write the short description, untick "Hide from the website", publish. | `GITHUB_TOKEN` — a fine-grained GitHub token for `kiankissinger/limitless-pa` only, with **Contents: Read and write** |
+| Suggestions → drafts (`netlify/functions/suggestion-drafts.mts`) | Every "Suggest a place" or "Share an event" submission appears in the CMS as a hidden draft with the place or event details. The repo is public, so the person's name, email, and message are never copied into it: they stay in Netlify → Forms. Review, write the short description, untick "Hide from the website", publish. | `GITHUB_TOKEN` — a fine-grained GitHub token for `kiankissinger/limitless-pa` only, with **Contents: Read and write** |
 | Nightly refresh (`netlify/functions/nightly-rebuild.mts`) | Rebuilds the site at about 4 AM Eastern so past events drop off and Site health stays current on days with no edits. | `BUILD_HOOK_URL` — create one under **Project configuration → Build & deploy → Build hooks** |
 
 ## Forms (Netlify Forms)

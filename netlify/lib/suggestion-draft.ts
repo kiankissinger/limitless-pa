@@ -65,19 +65,18 @@ function frontmatter(fields: [string, unknown, { keepEmpty?: boolean }?][], body
 export function draftFromSubmission(data: Record<string, string>, now = new Date()): Draft | null {
   if (clean(data['bot-field'])) return null; // spam honeypot
   const received = now.toISOString().slice(0, 10);
-  const who = [clean(data.name) || 'Someone', clean(data.relationship) && `(${clean(data.relationship)})`]
-    .filter(Boolean)
-    .join(' ');
+  // The repository is public, so drafts never include the person's name, email, or message.
+  // Those stay private in Netlify → Forms; the note just points there.
+  const relationship = clean(data.relationship);
 
   // "Suggest a place"
   if (clean(data.business)) {
     const name = clean(data.business);
     const website = toUrl(data.website);
     const notes = [
-      `Suggested through the website by ${who} on ${received}.`,
-      clean(data.story) && `What they said:\n${clean(data.story)}`,
+      `Suggested through the website on ${received}${relationship ? ` (from: ${relationship})` : ''}.`,
       clean(data.website) && !website && `Website they gave: ${clean(data.website)}`,
-      'Their email address is in Netlify → Forms → suggest-place.',
+      'Their name, email, and message are private: see Netlify → Forms → suggest-place.',
       'Before publishing: confirm the details with the business, write the short description, and untick “Hide from the website”.',
     ]
       .filter(Boolean)
@@ -109,10 +108,10 @@ export function draftFromSubmission(data: Record<string, string>, now = new Date
     const url = toUrl(data.url);
     const description = clean(data.description);
     const notes = [
-      `Submitted through the website by ${who} on ${received}.`,
+      `Submitted through the website on ${received}.`,
       `Full description:\n${description}`,
       clean(data.url) && !url && `Link they gave: ${clean(data.url)}`,
-      'Their email address is in Netlify → Forms → submit-event.',
+      'Their name and email are private: see Netlify → Forms → submit-event.',
       'Before publishing: confirm with the host, tidy the short description, and untick “Hide from the website”.',
     ]
       .filter(Boolean)
