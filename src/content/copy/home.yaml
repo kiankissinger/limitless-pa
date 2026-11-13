@@ -9,58 +9,63 @@ example:
   title: What a welcoming space can look like.
   category: Hair Salon/Barber Shop
   items:
-    - Quiet room in the back
-    - First appointment of the day
-    - Clippers off — scissors only
-    - No rush, breaks anytime
+    - Dedicated appointment times.
+    - Lower lights and music.
+    - No rush, breaks anytime.
+    - A quiet space to reset.
 notice:
-  title: Everything that isn’t a doctor’s office.
-  text: We’re a community group, not medical professionals. We focus on the rest
-    of life — haircuts, birthdays, movie nights, and Saturday mornings out.
+  title: Everyday moments matter.
+  text: "Every child deserves the chance to get out, make friends, and feel part
+    of their community. New places and experiences can sometimes feel
+    overwhelming, but with understanding and support, children can take part,
+    build connections, and thrive. "
 categories:
-  eyebrow: Browse by what you need
-  title: Where do you want to go?
+  eyebrow: Explore spaces
+  title: Let’s find something fun to do.
 featured:
   eyebrow: Sensory-friendly places
-  title: Places making room for every kid
+  title: Find a place that feels right for your family.
 look_for:
   eyebrow: What we look for
   title: Small changes that make a big difference
-  intro: A business doesn’t need to be perfect to be listed. We look for real,
-    practical accommodations that make an outing easier for kids with sensory
-    needs — and for the grown-ups with them.
+  intro: A business doesn’t need to have every answer. Thoughtful accommodations
+    and clear information can help children with disabilities and their families
+    feel more comfortable and decide what works for them.
   items:
     - icon: headphones
       title: Calmer spaces
-      text: A quiet room, a corner away from the music, or headphones to borrow.
+      text: A quiet room, a corner away from the music.
     - icon: clock
       title: Sensory-friendly times
       text: Hours with lights down, sound low, and fewer people around.
     - icon: heart
-      title: Patient, trained staff
-      text: People who know that a meltdown isn’t misbehavior — and don’t rush you.
+      title: Supportive staff
+      text: People who listen, offer flexibility, and treat every child with patience
+        and respect.
     - icon: calendar
-      title: Ways to plan ahead
-      text: Photos, social stories, or a walkthrough so nothing is a surprise.
+      title: Plan ahead
+      text: Families are welcome to visit ahead of time. Photos or a walkthrough can
+        help children know what to expect before they arrive.
     - icon: sparkle
       title: Flexible routines
       text: First appointment of the day, extra time, breaks whenever you need them.
     - icon: people
       title: Room to be yourself
-      text: Kids can move, stim, flap, and make noise — no side-eye.
+      text: Children are welcome to move or take a break in the ways that work for
+        them.
 events:
   eyebrow: Things to do
-  title: Upcoming & recurring events
+  title: Upcoming & Recurring Events
   empty: We’re gathering events now. Hosting something inclusive? [Share your
     event](/submit-event/).
 cta_suggest:
   title: Know a great place?
   text: The best recommendations come from families. If a business made your kid
-    feel welcome, tell us about it — we’ll check it out and add it to the guide.
+    feel welcome, tell us about it - we’ll check it out and add it to the guide.
   button: Suggest a place
 cta_business:
   title: Own a business?
   text: Whether you already offer sensory-friendly options or want to start, we’d
-    love to hear from you. Listing is free, and we can share simple ideas that
-    cost little or nothing.
+    love to hear from you. Listing is free, and we would love to have you as
+    part of our inclusive community!
   button: For businesses
