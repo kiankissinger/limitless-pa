@@ -1,38 +1,49 @@
 eyebrow: About Limitless PA
 title: Connecting Families. Celebrating Inclusion. Strengthening Community.
 intro: >-
-  We help Pennsylvania families of kids with special needs — especially autistic kids — find the places and people
-  that make everyday life a little easier.
-why_title: Why we started
-why_body: |-
-  For a lot of families, a haircut, a trip to the store, or a birthday party at the trampoline park takes real
-  planning. Loud music, bright lights, long lines, and crowded rooms can turn a simple outing into a hard day — and
-  too often, families just stop going.
+  Created in partnership with the John B. Gunter Leadership Program and the
+  Cambria Regional Chamber of Commerce, Limitless connects families of children
+  and young adults with disabilities to welcoming places, activities, events,
+  and resources in their community.
 
-  But all over Pennsylvania, businesses and organizations are quietly making changes: a barber who keeps a quiet
-  room in the back, a theater that keeps the lights up, a museum with headphones at the front desk. Those places are
-  hard to find. Limitless PA brings them together in one spot — and helps more businesses join them.
+
+  We believe everyone deserves the chance to feel included, build friendships, explore interests, discover new passions, and take part in community life. By sharing local opportunities and information about available accommodations, we help families find experiences that feel right for them.
+
+
+  Because every child and young adult deserves the opportunity to explore, connect, and discover that a world of possibilities is waiting.
+why_title: Why we started
+why_body: >-
+  Limitless was created with a simple belief: a child’s world should not be
+  defined by the places that feel out of reach.
+
+
+  A haircut, a trip to the store, or a birthday celebration can take extra planning when families aren’t sure what to expect or what support may be available. Limitless helps families find welcoming places and experiences, so children and young adults can make connections, explore what they love, and feel at home in their community.
 do_title: What we do
 do_items:
   - icon: search
     title: Find and share welcoming places.
-    text: We collect businesses and venues that have made real sensory-friendly accommodations, and we check the details.
+    text: We collect businesses and venues that have made real sensory-friendly
+      accommodations, and we check the details.
   - icon: calendar
     title: Promote inclusive events.
-    text: Sensory-friendly showings, adaptive sports, meetups, and family events from hosts across the state.
+    text: Sensory-friendly showings, adaptive sports, meetups, and family events
+      close to home.
   - icon: store
     title: Encourage businesses to adapt.
     text: We share simple, low-cost ideas that help any business welcome every kid.
   - icon: people
     title: Build community.
-    text: Recommendations come from families who’ve been there. That’s what makes this guide useful.
-not_title: What we’re not
-not_body: |-
-  **We are not medical providers, and we don’t claim to be.** We don’t list or recommend doctors,
-  therapists, or clinical services, and nothing on this site is medical, therapeutic, or legal advice. We focus on
-  everything else: the fun, everyday parts of life that every kid deserves.
+    text: Families’ experiences and recommendations can help others discover local
+      places and activities
+not_title: More room for connection
+not_body: Limitless helps families discover more ways to spend time together,
+  explore interests, build friendships, and take part in community life. We
+  bring local places, activities, and events together, with helpful details so
+  each family can decide what feels right for them.
 how_title: How listings work
-how_body: |-
-  Anyone can suggest a place. Before we list it, we confirm what the business offers. Listings are free. Because
+how_body: >-
+  Anyone can suggest a place. Before we list it, we confirm what the business
+  offers. Listings are free. Because
+
   programs change, we include the date we last checked each listing and always recommend calling ahead.
 help_title: Ways to help
